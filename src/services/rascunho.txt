@@ -1,0 +1,16 @@
+//else{
+    //header('Location:../../manterorientadores.php');
+//}
+    else{
+        // se a  matrícula não é numérica redireciona para manterorientador co erro
+        header('location:../../manterorientadores.php?cod=matricula_invalida');
+    
+    }
+else{
+    //se o email não tiver o formato correto redireciona para manterorientador com erro
+header('location:../../manterorientadores.php?cod=email_invalido');
+    
+}
+ else { //se não vier de post
+        }
+    }

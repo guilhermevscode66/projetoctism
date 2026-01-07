@@ -1,0 +1,23 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Controller\\": "src/controller/",
+            "Model\\": "src/model/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Guilherme Kolinski Baccin", 
+            "email": "guilhermekbaccin@gmail.com"
+        }
+    ],
+    "require": {
+        "twbs/bootstrap": "5.0.2",
+        "phpmailer/phpmailer": "^7.0"
+        
+        
+        
+        
+        
+    }
+}

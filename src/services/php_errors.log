@@ -1,0 +1,443 @@
+[31-Dec-2025 14:12:54 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[31-Dec-2025 14:12:54 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 
+    [idorientador] => 
+    [senha1] => guilherme 
+    [senha2] => guilherme
+)
+
+[31-Dec-2025 14:12:54 America/Sao_Paulo] SESSION data: Array
+(
+)
+
+[31-Dec-2025 14:12:54 America/Sao_Paulo] POST recebido
+[31-Dec-2025 14:12:54 America/Sao_Paulo] Erro: senhas diferentes
+[31-Dec-2025 14:27:10 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[31-Dec-2025 14:27:10 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[31-Dec-2025 14:27:10 America/Sao_Paulo] SESSION data: Array
+(
+)
+
+[31-Dec-2025 14:27:10 America/Sao_Paulo] POST recebido
+[31-Dec-2025 14:27:10 America/Sao_Paulo] Senha validada com sucesso
+[31-Dec-2025 14:27:10 America/Sao_Paulo] Verificando IDs...
+[31-Dec-2025 14:27:10 America/Sao_Paulo] idestagiario: 
+[31-Dec-2025 14:27:10 America/Sao_Paulo] idorientador: 
+[31-Dec-2025 14:27:10 America/Sao_Paulo] id: NÃO SETADO
+[31-Dec-2025 15:40:41 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[31-Dec-2025 15:40:41 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [id] => 80
+    [senha1] => Teste12345
+    [senha2] => Teste12345
+)
+
+[31-Dec-2025 15:40:41 America/Sao_Paulo] SESSION data: Array
+(
+)
+
+[31-Dec-2025 15:40:41 America/Sao_Paulo] POST recebido
+[31-Dec-2025 15:40:41 America/Sao_Paulo] Senha validada com sucesso
+[31-Dec-2025 15:40:41 America/Sao_Paulo] Verificando IDs...
+[31-Dec-2025 15:40:41 America/Sao_Paulo] idestagiario: 80
+[31-Dec-2025 15:40:41 America/Sao_Paulo] idorientador: NÃO SETADO
+[31-Dec-2025 15:40:41 America/Sao_Paulo] id: 80
+[31-Dec-2025 15:40:41 America/Sao_Paulo] Processando como estagiário. ID: 80
+[31-Dec-2025 15:40:41 America/Sao_Paulo] Controller de estagiários instanciado
+[31-Dec-2025 15:40:41 America/Sao_Paulo] CreateSenha chamado: ID=80
+[31-Dec-2025 15:40:41 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php:47
+Stack trace:
+#0 C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\services\PassVerify.php(57): Controller\EstagiariosController->CreateSenha()
+#1 {main}
+  thrown in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php on line 47
+[02-Jan-2026 14:37:46 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 14:37:46 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 14:37:46 America/Sao_Paulo] SESSION data: Array
+(
+)
+
+[02-Jan-2026 14:37:46 America/Sao_Paulo] POST recebido
+[02-Jan-2026 14:37:46 America/Sao_Paulo] Senha validada com sucesso
+[02-Jan-2026 14:37:46 America/Sao_Paulo] Verificando IDs...
+[02-Jan-2026 14:37:46 America/Sao_Paulo] idestagiario: 80
+[02-Jan-2026 14:37:46 America/Sao_Paulo] idorientador: 
+[02-Jan-2026 14:37:46 America/Sao_Paulo] id: 80
+[02-Jan-2026 14:37:46 America/Sao_Paulo] Processando como estagiário. ID: 80
+[02-Jan-2026 14:37:46 America/Sao_Paulo] Controller de estagiários instanciado
+[02-Jan-2026 14:37:46 America/Sao_Paulo] CreateSenha chamado: ID=80
+[02-Jan-2026 14:37:46 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php:47
+Stack trace:
+#0 C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\services\PassVerify.php(57): Controller\EstagiariosController->CreateSenha()
+#1 {main}
+  thrown in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php on line 47
+[02-Jan-2026 14:57:18 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 14:57:18 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 14:57:18 America/Sao_Paulo] SESSION data: Array
+(
+    [p] => Array
+        (
+            [idestagiario] => 80
+            [idorientador] => 
+            [id] => 80
+            [senha1] => guilherme
+            [senha2] => guilherme
+        )
+
+)
+
+[02-Jan-2026 14:57:18 America/Sao_Paulo] POST recebido
+[02-Jan-2026 14:57:18 America/Sao_Paulo] Senha validada com sucesso
+[02-Jan-2026 14:57:18 America/Sao_Paulo] Verificando IDs...
+[02-Jan-2026 14:57:18 America/Sao_Paulo] idestagiario: 80
+[02-Jan-2026 14:57:18 America/Sao_Paulo] idorientador: 
+[02-Jan-2026 14:57:18 America/Sao_Paulo] id: 80
+[02-Jan-2026 14:57:18 America/Sao_Paulo] Processando como estagiário. ID: 80
+[02-Jan-2026 14:57:18 America/Sao_Paulo] Controller de estagiários instanciado
+[02-Jan-2026 14:57:18 America/Sao_Paulo] CreateSenha chamado: ID=80
+[02-Jan-2026 14:57:18 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php:47
+Stack trace:
+#0 C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\services\PassVerify.php(57): Controller\EstagiariosController->CreateSenha()
+#1 {main}
+  thrown in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php on line 47
+[02-Jan-2026 15:08:49 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 15:08:49 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 15:08:49 America/Sao_Paulo] SESSION data: Array
+(
+    [p] => Array
+        (
+            [idestagiario] => 80
+            [idorientador] => 
+            [id] => 80
+            [senha1] => guilherme
+            [senha2] => guilherme
+        )
+
+)
+
+[02-Jan-2026 15:08:49 America/Sao_Paulo] POST recebido
+[02-Jan-2026 15:08:49 America/Sao_Paulo] Senha validada com sucesso
+[02-Jan-2026 15:08:49 America/Sao_Paulo] Verificando IDs...
+[02-Jan-2026 15:08:49 America/Sao_Paulo] idestagiario: 80
+[02-Jan-2026 15:08:49 America/Sao_Paulo] idorientador: 
+[02-Jan-2026 15:08:49 America/Sao_Paulo] id: 80
+[02-Jan-2026 15:08:49 America/Sao_Paulo] Processando como estagiário. ID: 80
+[02-Jan-2026 15:08:49 America/Sao_Paulo] Controller de estagiários instanciado
+[02-Jan-2026 15:08:49 America/Sao_Paulo] CreateSenha chamado: ID=80
+[02-Jan-2026 15:08:49 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php:47
+Stack trace:
+#0 C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\services\PassVerify.php(57): Controller\EstagiariosController->CreateSenha()
+#1 {main}
+  thrown in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php on line 47
+[02-Jan-2026 15:22:33 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 15:22:33 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 15:22:33 America/Sao_Paulo] SESSION data: Array
+(
+    [p] => Array
+        (
+            [idestagiario] => 80
+            [idorientador] => 
+            [id] => 80
+            [senha1] => guilherme
+            [senha2] => guilherme
+        )
+
+)
+
+[02-Jan-2026 15:22:33 America/Sao_Paulo] POST recebido
+[02-Jan-2026 15:22:33 America/Sao_Paulo] Senha validada com sucesso
+[02-Jan-2026 15:22:33 America/Sao_Paulo] Verificando IDs...
+[02-Jan-2026 15:22:33 America/Sao_Paulo] idestagiario: 80
+[02-Jan-2026 15:22:33 America/Sao_Paulo] idorientador: 
+[02-Jan-2026 15:22:33 America/Sao_Paulo] id: 80
+[02-Jan-2026 15:22:33 America/Sao_Paulo] Processando como estagiário. ID: 80
+[02-Jan-2026 15:22:33 America/Sao_Paulo] Controller de estagiários instanciado
+[02-Jan-2026 15:22:33 America/Sao_Paulo] CreateSenha chamado: ID=80
+[02-Jan-2026 15:22:33 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php:47
+Stack trace:
+#0 C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\services\PassVerify.php(57): Controller\EstagiariosController->CreateSenha()
+#1 {main}
+  thrown in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php on line 47
+[02-Jan-2026 15:23:26 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 15:23:26 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 15:23:26 America/Sao_Paulo] SESSION data: Array
+(
+    [p] => Array
+        (
+            [idestagiario] => 80
+            [idorientador] => 
+            [id] => 80
+            [senha1] => guilherme
+            [senha2] => guilherme
+        )
+
+)
+
+[02-Jan-2026 15:23:26 America/Sao_Paulo] POST recebido
+[02-Jan-2026 15:23:26 America/Sao_Paulo] Senha validada com sucesso
+[02-Jan-2026 15:23:26 America/Sao_Paulo] Verificando IDs...
+[02-Jan-2026 15:23:26 America/Sao_Paulo] idestagiario: 80
+[02-Jan-2026 15:23:26 America/Sao_Paulo] idorientador: 
+[02-Jan-2026 15:23:26 America/Sao_Paulo] id: 80
+[02-Jan-2026 15:23:26 America/Sao_Paulo] Processando como estagiário. ID: 80
+[02-Jan-2026 15:23:26 America/Sao_Paulo] Controller de estagiários instanciado
+[02-Jan-2026 15:23:26 America/Sao_Paulo] CreateSenha chamado: ID=80
+[02-Jan-2026 15:23:26 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php:47
+Stack trace:
+#0 C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\services\PassVerify.php(57): Controller\EstagiariosController->CreateSenha()
+#1 {main}
+  thrown in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php on line 47
+[02-Jan-2026 15:35:53 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 15:35:53 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 15:35:53 America/Sao_Paulo] SESSION data: Array
+(
+    [p] => Array
+        (
+            [idestagiario] => 80
+            [idorientador] => 
+            [id] => 80
+            [senha1] => guilherme
+            [senha2] => guilherme
+        )
+
+)
+
+[02-Jan-2026 15:35:53 America/Sao_Paulo] POST recebido
+[02-Jan-2026 15:35:53 America/Sao_Paulo] Senha validada com sucesso
+[02-Jan-2026 15:35:53 America/Sao_Paulo] Verificando IDs...
+[02-Jan-2026 15:35:53 America/Sao_Paulo] idestagiario: 80
+[02-Jan-2026 15:35:53 America/Sao_Paulo] idorientador: 
+[02-Jan-2026 15:35:53 America/Sao_Paulo] id: 80
+[02-Jan-2026 15:35:53 America/Sao_Paulo] Processando como estagiário. ID: 80
+[02-Jan-2026 15:35:53 America/Sao_Paulo] Controller de estagiários instanciado
+[02-Jan-2026 15:35:53 America/Sao_Paulo] CreateSenha chamado: ID=80
+[02-Jan-2026 15:35:53 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php:47
+Stack trace:
+#0 C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\services\PassVerify.php(57): Controller\EstagiariosController->CreateSenha()
+#1 {main}
+  thrown in C:\Users\guilh\OneDrive\Desktop\estagio\horario_estagio\src\Controller\EstagiariosController.php on line 47
+[02-Jan-2026 16:08:21 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 16:08:21 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 16:08:21 America/Sao_Paulo] SESSION data: Array
+(
+    [p] => Array
+        (
+            [idestagiario] => 80
+            [idorientador] => 
+            [id] => 80
+            [senha1] => guilherme
+            [senha2] => guilherme
+        )
+
+)
+
+[02-Jan-2026 16:08:21 America/Sao_Paulo] POST recebido
+[02-Jan-2026 16:08:21 America/Sao_Paulo] Senha validada com sucesso
+[02-Jan-2026 16:08:21 America/Sao_Paulo] Verificando IDs...
+[02-Jan-2026 16:08:21 America/Sao_Paulo] idestagiario: 80
+[02-Jan-2026 16:08:21 America/Sao_Paulo] idorientador: 
+[02-Jan-2026 16:08:21 America/Sao_Paulo] id: 80
+[02-Jan-2026 16:08:21 America/Sao_Paulo] Processando como estagiário. ID: 80
+[02-Jan-2026 16:08:21 America/Sao_Paulo] Controller de estagiários instanciado
+[02-Jan-2026 16:08:21 America/Sao_Paulo] CreateSenha chamado: ID=80
+[02-Jan-2026 16:08:21 America/Sao_Paulo] CreateSenha retornou: 
+[02-Jan-2026 16:08:21 America/Sao_Paulo] Falha ao criar senha para estagiário
+[02-Jan-2026 16:11:05 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 16:11:05 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] =>  guilherme
+    [senha2] => guilherme 
+)
+
+[02-Jan-2026 16:11:05 America/Sao_Paulo] SESSION data: Array
+(
+)
+
+[02-Jan-2026 16:11:05 America/Sao_Paulo] POST recebido
+[02-Jan-2026 16:11:05 America/Sao_Paulo] Erro: senhas diferentes
+[02-Jan-2026 16:13:00 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 16:13:00 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [id] => 80
+    [senha1] => guilherme 
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 16:13:00 America/Sao_Paulo] SESSION data: Array
+(
+)
+
+[02-Jan-2026 16:13:00 America/Sao_Paulo] POST recebido
+[02-Jan-2026 16:13:00 America/Sao_Paulo] Erro: senhas diferentes
+[02-Jan-2026 17:10:12 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[02-Jan-2026 17:10:12 America/Sao_Paulo] POST data: Array
+(
+    [idestagiario] => 80
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[02-Jan-2026 17:10:12 America/Sao_Paulo] SESSION data: Array
+(
+)
+
+[02-Jan-2026 17:10:12 America/Sao_Paulo] POST recebido
+[02-Jan-2026 17:10:12 America/Sao_Paulo] Senha validada com sucesso
+[02-Jan-2026 17:10:12 America/Sao_Paulo] Verificando IDs...
+[02-Jan-2026 17:10:12 America/Sao_Paulo] idestagiario: 80
+[02-Jan-2026 17:10:12 America/Sao_Paulo] idorientador: 
+[02-Jan-2026 17:10:12 America/Sao_Paulo] id: NÃO SETADO
+[02-Jan-2026 17:10:12 America/Sao_Paulo] Processando como estagiário. ID: 80
+[02-Jan-2026 17:10:12 America/Sao_Paulo] Controller de estagiários instanciado
+[02-Jan-2026 17:10:12 America/Sao_Paulo] CreateSenha chamado: ID=80
+[02-Jan-2026 17:10:12 America/Sao_Paulo] CreateSenha retornou: 1
+[02-Jan-2026 17:10:12 America/Sao_Paulo] Senha criada com sucesso para estagiário
+[02-Jan-2026 17:10:12 America/Sao_Paulo] Estagiário carregado: SIM
+[07-Jan-2026 23:01:11 UTC] === DEBUG PassVerify.php ===
+[07-Jan-2026 23:01:11 UTC] POST data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[07-Jan-2026 23:01:11 UTC] SESSION data: Array
+(
+    [idorientador] => 7
+)
+
+[07-Jan-2026 23:01:11 UTC] POST recebido
+[07-Jan-2026 23:01:11 UTC] Senha validada com sucesso
+[07-Jan-2026 23:01:11 UTC] Verificando IDs...
+[07-Jan-2026 23:01:11 UTC] idestagiario: 86
+[07-Jan-2026 23:01:11 UTC] idorientador: 
+[07-Jan-2026 23:01:11 UTC] id: NÃO SETADO
+[07-Jan-2026 23:01:11 UTC] Processando como estagiário. ID: 86
+[07-Jan-2026 23:01:11 UTC] Controller de estagiários instanciado
+[07-Jan-2026 23:01:11 UTC] CreateSenha chamado: ID=86
+[07-Jan-2026 23:01:11 UTC] CreateSenha retornou: 1
+[07-Jan-2026 23:01:11 UTC] Senha criada com sucesso para estagiário
+[07-Jan-2026 23:01:11 UTC] Estagiário carregado: SIM
+[07-Jan-2026 23:08:13 UTC] === DEBUG PassVerify.php ===
+[07-Jan-2026 23:08:13 UTC] POST data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[07-Jan-2026 23:08:13 UTC] SESSION data: Array
+(
+    [idorientador] => 7
+    [idestagiario] => 86
+)
+
+[07-Jan-2026 23:08:13 UTC] POST recebido
+[07-Jan-2026 23:08:13 UTC] Senha validada com sucesso
+[07-Jan-2026 23:08:13 UTC] Verificando IDs...
+[07-Jan-2026 23:08:13 UTC] idestagiario: 86
+[07-Jan-2026 23:08:13 UTC] idorientador: 
+[07-Jan-2026 23:08:13 UTC] id: NÃO SETADO
+[07-Jan-2026 23:08:13 UTC] Processando como estagiário. ID: 86
+[07-Jan-2026 23:08:13 UTC] Controller de estagiários instanciado
+[07-Jan-2026 23:08:13 UTC] CreateSenha chamado: ID=86
+[07-Jan-2026 23:08:13 UTC] CreateSenha retornou: 0
+[07-Jan-2026 23:08:13 UTC] Falha ao criar senha para estagiário
+[07-Jan-2026 23:14:12 UTC] === DEBUG PassVerify.php ===
+[07-Jan-2026 23:14:12 UTC] POST data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[07-Jan-2026 23:14:12 UTC] SESSION data: Array
+(
+    [idorientador] => 7
+    [idestagiario] => 86
+)
+
+[07-Jan-2026 23:14:12 UTC] POST recebido
+[07-Jan-2026 23:14:12 UTC] Senha validada com sucesso
+[07-Jan-2026 23:14:12 UTC] Verificando IDs...
+[07-Jan-2026 23:14:12 UTC] idestagiario: 86
+[07-Jan-2026 23:14:12 UTC] idorientador: 
+[07-Jan-2026 23:14:12 UTC] id: NÃO SETADO
+[07-Jan-2026 23:14:12 UTC] Processando como estagiário. ID: 86
+[07-Jan-2026 23:14:12 UTC] Controller de estagiários instanciado
+[07-Jan-2026 23:14:12 UTC] CreateSenha chamado: ID=86
+[07-Jan-2026 23:14:12 UTC] CreateSenha retornou: 0
+[07-Jan-2026 23:14:12 UTC] Falha ao criar senha para estagiário

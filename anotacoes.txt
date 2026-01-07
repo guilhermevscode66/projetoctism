@@ -1,0 +1,18 @@
+Criar colunas orientador de supervisor na tabela estagiariosprojetos
+
+setar o idprojeto do projeto selecionado no combobox
+ajustar o insert de estagiários para inserir o idprojeto na tabela
+ajurtar o update do estagiários para atualizar o idprojeto
+
+
+Lançamento da hora do  estagiário
+criar coluna idprojeto na tabela bancohoras
+
+Recebe na página os dois ids de estagiário e de projetos
+ajursta o insert do bancohoras para inserir os dois ids
+criar propriedade na classe bancohorasmodel
+
+Utilizar um estagiário que já tenha idprojeto e idestagiario
+retirar as mensõesao estagiariosprojetos_id da controller
+redirecionar para horastrabalhadas.php com o idprojeto e o idestagiario
+reesgatar o idestagiario e o idprojeto na horastrabalhadas.php
