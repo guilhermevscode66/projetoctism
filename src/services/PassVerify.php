@@ -8,6 +8,9 @@ use Controller\OrientadoresController;
 use Controller\EstagiariosController;
 use Controller\MailController;
 
+require_once '../../shared/csrf.php';
+require_once '../../config.php';
+
 // Inicia a sessão no início do script
 session_start();
 // Log para ver o que está chegando
@@ -30,6 +33,13 @@ foreach ($_POST as $k => $v) {
 }
 
 if($_POST){
+
+    // CSRF validation
+    if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
+        $_SESSION['error'] = 'csrf_fail';
+        header('Location:../../setpassword.php');
+        exit();
+    }
     error_log("POST recebido");
         
     // Não escapar as senhas (preservar caracteres); apenas trim
@@ -68,75 +78,116 @@ if($_POST){
             $controller = new EstagiariosController;
                         error_log("Controller de estagiários instanciado");
 
-                        
+            // Carrega estagiário antes de alterar para verificar se já existia senha
+            $estagiario = $controller->loadById($_POST['idestagiario']);
+            $is_update = false;
+            if ($estagiario && method_exists($estagiario, 'getSenha') && $estagiario->getSenha() !== null && $estagiario->getSenha() !== '') {
+                $is_update = true;
+            }
+
             $total = $controller->CreateSenha($_POST['idestagiario'], $_POST['senha1']);
                         error_log("CreateSenha retornou: " . $total);
-            
+
             if($total > 0){
-                                error_log("Senha criada com sucesso para estagiário");
+                                error_log("Senha criada/atualizada com sucesso para estagiário");
                 $estagiario = $controller->loadById($_POST['idestagiario']);
-                                error_log("Estagiário carregado: " . ($estagiario ? "SIM" : "NÃO"));
                 $email = new MailController;
                 $email->mail->clearAddresses();
                 $email->mail->addAddress($estagiario->getEmail());
-                $email->mail->Subject = 'não responda, cadastro de estagiário Night Wind';
-                $email->mail->Body = '<!DOCTYPE html><html lang="pt-br"><body>' .
-                    '<h1>Boas vindas à equipe Night Wind!</h1>' .
-                    '<p>Olá, ' . htmlspecialchars($estagiario->getNomeCompleto()) . '.</p>' .
-                    '<p>Bem-vindo/a ao sistema de banco de horas da equipe Night Wind. Aqui você pode registrar suas horas de trabalho de uma forma fácil e rápida, além de poder consultar todas as suas horas lançadas.</p>' .
-                    '<p><a class="badge bg-primary" href="http://localhost:80/home.php?idestagiario=' . (int)$estagiario->getId() . '">Conheça o sistema de banco de horas da Night Wind</a></p>' .
-                    '<p>Atenciosamente: Equipe Night Wind</p>' .
-                    '<footer>Esse email foi gerado automaticamente, não é necessário responder.</footer>' .
-                    '</body></html>';
+                if ($is_update) {
+                    $subject = 'Não responda — Senha atualizada';
+                    $title = 'Senha atualizada com sucesso';
+                    $name = $estagiario->getNomeCompleto();
+                    $message = '<p>Sua senha foi atualizada com sucesso. Caso não tenha sido você, entre em contato com a equipe responsável.</p>';
+                    $email->setTemplate($subject, $title, $name, $message, 'Ir para o sistema', BASE_URL . '/home.php?idestagiario=' . (int)$estagiario->getId());
+                } else {
+                    $subject = 'Não responda — Boas-vindas';
+                    $title = 'Bem-vindo ao sistema';
+                    $name = $estagiario->getNomeCompleto();
+                    $message = '<p>Bem-vindo/a ao sistema de controle de horários. Aqui você pode registrar suas horas de trabalho e consultar seus lançamentos.</p>';
+                    $email->setTemplate($subject, $title, $name, $message, 'Acessar sistema', BASE_URL . '/home.php?idestagiario=' . (int)$estagiario->getId());
+                }
                 if ($email->send()) {
                     $_SESSION['idestagiario'] = $estagiario->getId();
                     unset($_SESSION['p']); // Limpa dados temporários
                     unset($_SESSION['error']); // Limpa erros anteriores
-                    header('Location:../../home.php');
+                    $redirect = '../../home.php';
+                    if (!headers_sent()) {
+                        header('Location: ' . $redirect);
+                        exit();
+                    }
+                    echo '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=' . htmlspecialchars($redirect) . '"></head><body><script>window.location.href="' . addslashes($redirect) . '";</script></body></html>';
                     exit();
                 } else {
                     $_SESSION['error'] = 'email_falhou';
-                    header('Location:../../setpassword.php');
+                    $redirect = '../../setpassword.php';
+                    if (!headers_sent()) {
+                        header('Location: ' . $redirect);
+                        exit();
+                    }
+                    echo '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=' . htmlspecialchars($redirect) . '"></head><body><script>window.location.href="' . addslashes($redirect) . '";</script></body></html>';
                     exit();
                 }
             } else {
                 error_log("Falha ao criar senha para estagiário");
                 $_SESSION['error'] = 'cadastro_falhou';
-              //  header('Location:../../setpassword.php');
+  //              header('Location:../../setpassword.php');
 //                exit();
             }
             
-        } elseif(isset($_POST['idorientador']) && !empty($_POST['idorientador'])){
-                        error_log("Processando como orientador. ID: " . $_POST['idorientador']);
-            $controller = new OrientadoresController;
-                        error_log("Controller de orientadores instanciado");
-            $total = $controller->CreateSenha($_POST['idorientador'], $_POST['senha1']);
-                        error_log("CreateSenha retornou: " . $total);
-            
-            if($total > 0){
-                                error_log("Senha criada com sucesso para orientador");
-                $orientador = $controller->loadById($_POST['idorientador']);
-                $email = new MailController;
-                $email->mail->clearAddresses();
-                $email->mail->addAddress($orientador->getEmail());
-                $email->mail->Subject = 'não responda, cadastro de orientador Night Wind';
-                $email->mail->Body = '<!DOCTYPE html><html lang="pt-br"><body>' .
-                    '<h1>Boas vindas à equipe Night Wind!</h1>' .
-                    '<p>Olá, ' . htmlspecialchars($orientador->getnomeorientador()) . ', bem-vindo/a ao sistema de banco de horas da equipe Night Wind.</p>' .
-                    '<p>Aqui você pode cadastrar seus estagiários e verificar suas informações de forma fácil.</p>' .
-                    '<p><a class="badge bg-primary" href="http://localhost:80/home.php?idorientador=' . (int)$orientador->getId() . '">Conheça o sistema de banco de horas da Night Wind</a></p>' .
-                    '<p>Atenciosamente: Equipe Night Wind</p>' .
-                    '<footer>Esse email foi gerado automaticamente, não é necessário responder.</footer>' .
-                    '</body></html>';
+                } elseif(isset($_POST['idorientador']) && !empty($_POST['idorientador'])){
+                                                error_log("Processando como orientador. ID: " . $_POST['idorientador']);
+                        $controller = new OrientadoresController;
+                                                error_log("Controller de orientadores instanciado");
+
+                        // Carrega orientador antes de alterar para verificar se já existia senha
+                        $orientador = $controller->loadById($_POST['idorientador']);
+                        $is_update = false;
+                        if ($orientador && method_exists($orientador, 'getSenha') && $orientador->getSenha() !== null && $orientador->getSenha() !== '') {
+                                $is_update = true;
+                        }
+
+                        $total = $controller->CreateSenha($_POST['idorientador'], $_POST['senha1']);
+                                                error_log("CreateSenha retornou: " . $total);
+
+                        if($total > 0){
+                                                                error_log("Senha criada/atualizada com sucesso para orientador");
+                                $orientador = $controller->loadById($_POST['idorientador']);
+                                $email = new MailController;
+                                $email->mail->clearAddresses();
+                                $email->mail->addAddress($orientador->getEmail());
+                                if ($is_update) {
+                                    $subject = 'Não responda — Senha atualizada';
+                                    $title = 'Senha atualizada com sucesso';
+                                    $name = $orientador->getnomeorientador();
+                                    $message = '<p>Sua senha foi atualizada com sucesso. Caso não tenha sido você, entre em contato com a equipe responsável.</p>';
+                                    $email->setTemplate($subject, $title, $name, $message, 'Ir para o sistema', BASE_URL . '/home.php?idorientador=' . (int)$orientador->getId());
+                                } else {
+                                    $subject = 'Não responda — Boas-vindas';
+                                    $title = 'Bem-vindo ao sistema';
+                                    $name = $orientador->getnomeorientador();
+                                    $message = '<p>Bem-vindo/a ao sistema de controle de horários. Aqui você pode gerenciar estagiários e projetos de forma simples.</p>';
+                                    $email->setTemplate($subject, $title, $name, $message, 'Acessar sistema', BASE_URL . '/home.php?idorientador=' . (int)$orientador->getId());
+                                }
                 if ($email->send()) {
                     $_SESSION['idorientador'] = $orientador->getId();
                     unset($_SESSION['p']);
                     unset($_SESSION['error']);
-                    header('Location:../../home.php');
+                    $redirect = '../../home.php';
+                    if (!headers_sent()) {
+                        header('Location: ' . $redirect);
+                        exit();
+                    }
+                    echo '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=' . htmlspecialchars($redirect) . '"></head><body><script>window.location.href="' . addslashes($redirect) . '";</script></body></html>';
                     exit();
                 } else {
                     $_SESSION['error'] = 'email_falhou';
-                    header('Location:../../setpassword.php');
+                    $redirect = '../../setpassword.php';
+                    if (!headers_sent()) {
+                        header('Location: ' . $redirect);
+                        exit();
+                    }
+                    echo '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=' . htmlspecialchars($redirect) . '"></head><body><script>window.location.href="' . addslashes($redirect) . '";</script></body></html>';
                     exit();
                 }
             } else {

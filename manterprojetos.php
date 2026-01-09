@@ -32,6 +32,7 @@ unset($_SESSION['p'], $_SESSION['error']);
     <div class="card p-4">
         <h4>Informe os dados do projetos:</h4>
         <form action="./src/services/ServicesProjetos.php" method="POST">
+            <?php require_once 'shared/csrf.php'; csrf_input(); ?>
             <div class="mb-3">
                 <input type="hidden" name="id" value="<?php echo(@$projetos?$projetos->getId():'') ?>">
             </div>

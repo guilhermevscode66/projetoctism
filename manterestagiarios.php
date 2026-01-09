@@ -5,6 +5,7 @@ use Controller\OrientadoresController;
 
 require_once 'shared/header.php';
 require_once 'vendor/autoload.php';
+require_once 'shared/csrf.php';
 $controller = new EstagiariosController;
 if(isset($_REQUEST['id'])){
     $id =$_REQUEST['id'];
@@ -12,6 +13,8 @@ if(isset($_REQUEST['id'])){
 }
 //recupera os dados da sessão da services
 $p=[];
+// normalizar código de retorno (evita notices caso não exista)
+$cod = isset($_REQUEST['cod']) ? $_REQUEST['cod'] : null;
 
 if(isset($_SESSION['p'])){
 $p=$_SESSION['p'];
@@ -24,6 +27,7 @@ unset($_SESSION['p']);
 <h1 class ="mb-4"><?=isset($estagiario)&&$estagiario->getId() ? 'Editar estagiário' : 'Novo estagiário'?></h1>
 </div>
 <form method="post" action="src/services/EstagiariosServices.php">
+    <?php csrf_input(); ?>
 <input type="hidden" name ="id" value="<?php echo(isset($estagiario)?$estagiario->getId():'' );?>"/>
 <div class="mb-3">
     <label for="nomecompleto" class="form-label"> Nome completo </label>
@@ -49,7 +53,7 @@ unset($_SESSION['p']);
         placeholder=" Digite seu e-mail"
     />
     <?php
-    if($_REQUEST['cod'] &&$_REQUEST['cod'] =='email_invalido'){
+    if($cod === 'email_invalido'){
         echo '<small class="text-danger"> O endereço de e-mail informado é inválido </small>';
     }
 
@@ -67,7 +71,7 @@ unset($_SESSION['p']);
         placeholder=" Digite suaMatrícula"
     />
     <?php
-    if($_REQUEST['cod'] && $_REQUEST['cod'] =='matricula_invalida'){
+    if($cod === 'matricula_invalida'){
         echo '<small class="text-danger"> A matrícula informada é inválida </small>';
     }
 
@@ -111,7 +115,6 @@ unset($_SESSION['p']);
 <?php
 
 $projetosController= new ProjetosController;
-var_dump($projetosController->loadAll());
 $projetoslist=$projetosController->loadAll();
 
 foreach($projetoslist as $projeto){
@@ -128,7 +131,6 @@ foreach($projetoslist as $projeto){
 $orientadoresController= new OrientadoresController;
 
 $orientadoreslist = $orientadoresController->loadAll();
-var_dump($orientadoreslist);
 foreach($orientadoreslist as $value){
 echo ' <option value = "'.$value->getId().'" > '.$value->getnomeorientador().' </option>';
 

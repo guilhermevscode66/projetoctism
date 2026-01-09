@@ -4,20 +4,6 @@ use Model\OrientadoresModel;
 
 class OrientadoresController
 {
-//função de login
-public function login($matricula, $senha){
-        $model = new OrientadoresModel();
-        $load = $model->loadByMatricula($matricula);
-        if($matricula ==$load->getMatricula($matricula) && $senha == $load->getSenha()){
-            session_start();
-        $_SESSION['idorientador'] = $load->getId();    
-    
-            return true;
-        }else{
-            return false;
-        }
-    }
-//fim da função
 
 
     public function loadAll() {
@@ -26,7 +12,10 @@ public function login($matricula, $senha){
         return $model->loadAll(); // Retorna todos os projetoss
 
     }
-
+public function loadByEmail($email){
+        $model = new OrientadoresModel();
+        return $model->loadByEmail($email); // Retorna um orientador específico
+    }
     public function loadById($id) {
         $model = new OrientadoresModel();
         return $model->loadById($id); // Retorna um projetos específico
@@ -57,9 +46,10 @@ $model->setidprojeto($data['idprojeto']);
     }
 
     
-public function CreateSenha($id, $data){
+public function CreateSenha($id, $senha){
     $model = new OrientadoresModel;
-    $model->setSenha($data['senha']);
+    $model->setId($id);
+    $model->setSenha($senha);
     return $model->saveSenha();
 }
 

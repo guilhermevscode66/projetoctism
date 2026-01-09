@@ -3,29 +3,29 @@ use Controller\MailController;
 use Controller\ProjetosController;
 
 require_once '../../vendor/autoload.php';
+require_once '../../shared/csrf.php';
+require_once '../../config.php'; // Certifique-se de que o config está aqui para o BASE_URL
 
-// Normaliza e sanitiza entradas POST para evitar notices e XSS
-$__expected_post_keys = array_merge(array_keys($_POST ?? []), ['nome','id']);
+// 1. Normalização e sanitização
+$__expected_post_keys = array_merge(array_keys($_POST ?? []), ['nome','id', 'csrf_token']);
 foreach ($__expected_post_keys as $k) {
     if (!isset($_POST[$k])) $_POST[$k] = null;
 }
-foreach ($_POST as $k => $v) {
-    if (is_string($v)) $_POST[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
-}
 
-// Insert e Update
-if ($_POST) {
-    //cria uma sessão para armazenar os dados que vão voltar para o formulário em caso de erro
+// 2. Processamento via POST (Insert/Update)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
+        session_start();
+        $_SESSION['error'] = 'csrf_fail';
+        header('Location:../../manterprojetos.php');
+        exit();
+    }
+
     session_start();
-    $_SESSION['p']=$_POST;
-//elimina caracteres especiais dos campos de cadastro de projetos...
-$_POST['nome']=htmlspecialchars($_POST['nome']);
-//fim da parte de protecao sql
-    //mensagem de email para o cadastro
-    $sub='naoresponder, cadastro de projeto, Night Wind';
-    $msg= '<p> Presado orientador, Foi efetuado o cadastro de um novo projeto no sistema.</p> <p> Você pode ver todos os projetos cadastrados neste link</p> \n<a href="../../listarprojetos.php"> Conferir meus projetos</a> \n <p>Atenciosamente,</p> \n <p>Sistema de notificação do Night Wind.</p>\n<p> OBS: Esse email foi gerado automaticamente, não é necessário responder. </p>';
+    $_SESSION['p'] = $_POST;
 
-    $controller = new ProjetosController;
+    $controller = new ProjetosController();
     $total = 0;
 
     if (empty($_POST['id'])) {
@@ -35,32 +35,51 @@ $_POST['nome']=htmlspecialchars($_POST['nome']);
     }
 
     if ($total > 0) {
-        //se total maior que zero conseguiu cadastrar, envio o email de cadastrado com sucesso
-         header('location:\listarProjetos.php');
-}}
-        
+        // Redireciona para a listagem com mensagem de sucesso
+        header('Location: ../../listarprojetos.php?msg=sucesso_save');
+        exit();
+    } else {
+        header('Location: ../../listarprojetos.php?msg=erro_save');
+        exit();
+    }
+
+} 
+// 3. Processamento via GET (Delete)
+else if (isset($_GET['id'])) {
     
+    $id = (int)$_GET['id'];
+    $controller = new ProjetosController();
+    
+    // Carrega antes de deletar para recuperar o nome do projeto para o e-mail
+    $proj = $controller->loadById($id);
 
-
- else { //se não vier de post
-    // Delete
-    if (isset($_REQUEST['id'])) {
-        $id = $_REQUEST['id'];
-        $controller = new ProjetosController;
+    if ($proj) {
+        $projName = method_exists($proj, 'getNome') ? $proj->getNome() : 'Projeto';
+        
         $total = $controller->delete($id);
+
         if ($total > 0) {
-            // se total for maior que zero conseguiu deletar e envia o email de aviso
-            $email= new MailController;
-            $sub=$email->mail->Subject='naoresponder, projeto deletado, Night Wind';
-            $msg = $email->mail->Body='<p> Presado orientador, Um projeto foi deletado do sistema.</p>
-            <p> nome do projeto:' . $_POST['nome']. '</p>
-             <p> Veja seus projetos nesse link:</p> \n
-<a href="../../listarprojetos.php">Conferir meus projetos</a>
-              \n <p>Atenciosamente</p>,\n <p>Sistema de notificação do Night Wind.</p> \n<p> OBS: esse email foi gerado automaticamente, não é necessário responder. </p>';
-            if($email->send()){
-            header ('location:\listarProjetos.php');
-        }} else {// se não conseguiu deletar apenas redireciona.
-            header ('location:\listarProjetos.php?msg=2');
+            try {
+                $email = new MailController();
+                $subject = 'Não responda — Projeto removido';
+                $title = 'Projeto removido do sistema';
+                $message = '<p>O projeto <strong>' . htmlspecialchars($projName) . '</strong> foi removido do sistema.</p>';
+                
+                // Nota: Para projetos, você precisa definir para quem enviar o e-mail. 
+                // Se a classe MailController não tiver um destinatário padrão, adicione:
+                // $email->mail->addAddress('admin@seu-sistema.com'); 
+
+                $email->setTemplate($subject, $title, 'Orientador', $message, 'Ver projetos', BASE_URL . '/listarprojetos.php');
+                $email->send();
+            } catch (Exception $e) {
+                // Erro de e-mail não impede o redirecionamento
+            }
+
+            header('Location: ../../listarprojetos.php?msg=sucesso_delete');
+            exit();
         }
     }
+    
+    header('Location: ../../listarprojetos.php?msg=erro_delete');
+    exit();
 }

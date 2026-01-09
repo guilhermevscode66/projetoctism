@@ -35,6 +35,7 @@ window.addEventListener("load", function() {
 
 
 <form id="FormBancoHoras" method="post" action="src/services/RegistroHorasServices.php">
+  <?php require_once 'shared/csrf.php'; csrf_input(); ?>
   <input type="hidden" name = "idprojeto" value= "<?php echo(isset($_GET['idprojeto'])? $_GET['idprojeto']: '')?>">
   <input type="hidden" name = "idestagiario" value= "<?php echo(isset($_GET['idestagiario'])? $_GET['idestagiario']: '')?>">
   

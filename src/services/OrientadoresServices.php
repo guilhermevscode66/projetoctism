@@ -3,6 +3,8 @@ use Controller\MailController;
 use Controller\OrientadoresController;
 
 require_once '../../vendor/autoload.php';
+require_once '../../config.php';
+require_once '../../shared/csrf.php';
 
 // Normaliza e sanitiza entradas POST para evitar notices e XSS
 $__expected_post_keys = array_merge(array_keys($_POST ?? []), ['nome','matricula','email','id']);
@@ -15,6 +17,12 @@ foreach ($_POST as $k => $v) {
 
 // Insert e Update
 if ($_POST) {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
+        session_start();
+        $_SESSION['error'] = 'csrf_fail';
+        header('Location:../../manterorientadores.php');
+        exit();
+    }
     //cria uma sessão para armazenar os dados que vão voltar para o formulário em caso de erro
     session_start();
     $_SESSION['p'] = $_POST;
@@ -26,7 +34,7 @@ if ($_POST) {
     
     //valida se o email é válido e a matrícula é numérica
     
-if(is_numeric($_POST['matricula'])){
+    if(is_numeric($_POST['matricula'])){
     if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
         $controller = new OrientadoresController;
         $total = 0;
@@ -42,18 +50,16 @@ if($total>0){
     $orient = $controller->loadByMatricula($_POST['matricula']);
     $recipient = $orient->getEmail();
 
-    $email = new MailController;
+    $email = new MailController();
     $email->mail->clearAddresses();
     $email->mail->addAddress($recipient);
-    $email->mail->Subject = 'naoresponda, criação de senha - Night Wind';
-    $email->mail->Body = '<!DOCTYPE html><html lang="pt-br"><body>' .
-        '<p>Olá, bem-vindo/a ao sistema de banco de horas do Night Wind. Recebemos uma solicitação de criação de senha para a conta de nome ' . htmlspecialchars($_POST['nome']) . ' e email ' . htmlspecialchars($recipient) . '.</p>' .
-        '<p>Se foi você que solicitou, clique no link abaixo para criar sua senha:</p>' .
-        '<p><a href="http://localhost:80/setpassword.php?idorientador=' . (int)$orient->getId() . '">Crie sua senha aqui</a></p>' .
-        '<p>Atenciosamente: equipe Night Wind.</p>' .
-        '<footer>Esse email foi gerado automaticamente, não é necessário responder</footer>' .
-        '</body></html>';
-    if ($email->mail->send()) {
+    $subject = 'Não responda — Criação de senha';
+    $title = 'Criação de senha';
+    $name = htmlspecialchars($_POST['nome']);
+    $message = '<p>Bem-vindo/a ao sistema de controle de horários. Recebemos uma solicitação de criação de senha para a conta de nome ' . $name . ' e email ' . htmlspecialchars($recipient) . '.</p>' .
+               '<p>Se foi você que solicitou, clique no botão abaixo para criar sua senha:</p>';
+    $email->setTemplate($subject, $title, $name, $message, 'Criar senha', BASE_URL . '/setpassword.php?idorientador=' . (int)$orient->getId());
+    if ($email->send()) {
         header('Location:../../aviso_sobre_email_enviado.php');
     }
         }              
@@ -69,19 +75,24 @@ if($total>0){
     if (isset($_REQUEST['id'])) {
         $id = $_REQUEST['id'];
         $controller = new OrientadoresController;
+        // carrega antes de deletar para obter dados para notificação
+        $orient = $controller->loadById($id);
+        $orientName = method_exists($orient, 'getnomeorientador') ? $orient->getnomeorientador() : '';
+        $recipient = method_exists($orient, 'getEmail') ? $orient->getEmail() : null;
         $total = $controller->delete($id);
         if ($total > 0) {
-            // se total for maior que zero conseguiu deletar e envia o email de aviso
-            $email = new MailController;
-            $sub = $email->mail->Subject = 'naoresponder, orientador deletado, Night Wind';
-            $msg = $email->mail->Body = '<p> Presado orientador, Um orientador foi deletado do sistema.</p>
-            <p> nome do orientador:' . $_POST['nome'] . '</p>
-              <p>Atenciosamente</p>, <p>Sistema de notificação do Night Wind.</p> <p> OBS: esse email foi gerado automaticamente, não é necessário responder. </p>';
-            if ($email->send()) {
-                header('location:\manterorientadores.php');
+            $email = new MailController();
+            if (!empty($recipient)) {
+                $subject = 'Não responda — Orientador removido';
+                $title = 'Orientador removido do sistema';
+                $name = $orientName ?: 'Orientador';
+                $message = '<p>O orientador <strong>' . htmlspecialchars($orientName, ENT_QUOTES, 'UTF-8') . '</strong> foi removido do sistema.</p>';
+                $email->setTemplate($subject, $title, $name, $message, 'Ver orientadores', BASE_URL . '/listarorientadores.php');
+                $email->send();
             }
+            header('Location:../../manterorientadores.php');
         } else { // se não conseguiu deletar apenas redireciona.
-            header('Location:\listarorientadores.php?msg=2');
+            header('Location:../../listarorientadores.php?msg=2');
         }
     }
 }

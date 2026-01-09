@@ -1,6 +1,7 @@
 <?php
 require_once 'shared/header.php';
 require_once 'vendor/autoload.php';
+require_once 'shared/csrf.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -10,6 +11,7 @@ use Controller\UsuariosController;
 
 
 ?>
+<div class="container mt-4">
 <h2 class="mb-4">Autenticação</h2>
 <p> Faça login para acessar o sistema de controle de horários</p>
 <p> Qual seu tipo de usuário?</p>
@@ -25,28 +27,7 @@ use Controller\UsuariosController;
     }
     ?>
     </select>
-<!-- javascript para ocultar/mostrar senha -->$_COOKIE
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.mostrarsenha');
-    
-    buttons.forEach(function(toggleButton){
-    toggleButton.addEventListener('click', function() {
-        const targetId= this.getAttribute('data-target');
-const passwordField= document.getElementById(targetId);
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            this.textContent = 'Ocultar senha';
-            passwordField.setAttribute('aria-label', 'Senha visível');
-        } else {
-            passwordField.type = 'password';
-            this.textContent = 'Mostrar senha';
-            passwordField.setAttribute('aria-label', 'Senha oculta');
-        }
-    });
-});
-});
-</script>
+    <?php csrf_input(); ?>
 
 <div class="mb-3">
     <label for="usuario" class="form-label">Usuário (matrícula)</label>
@@ -90,14 +71,18 @@ const passwordField= document.getElementById(targetId);
 
         placeholder="Digite sua senha"
     /> 
-    <button type="button" class="mostrarsenha" data-targert="senha" >Mostrar senha</button>
+    <button type="button" class="mostrarsenha" data-target="senha" aria-controls="senha" aria-pressed="false" aria-label="Mostrar senha">Mostrar senha</button>
 </div>
 
 <button class="btn btn-success">Entrar</button>
 
 </form>
-<a href="forgot-password.php">Esqueci minha senha</a>
-<a href="home.php">Como usar o sistema?</a>
+<div class="mt-3">
+    <a href="forgot-password.php" class="me-3">Esqueci minha senha</a>
+    <a href="home.php">Como usar o sistema?</a>
+</div>
+</div>
+
 <?php
 require_once 'shared/footer.php';
 ?>

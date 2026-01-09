@@ -3,6 +3,7 @@ use Controller\BancoHorasController;
 
 
 require_once '../../vendor/autoload.php';
+require_once '../../shared/csrf.php';
 
 // Normaliza e sanitiza entradas POST para evitar notices e XSS
 $__expected_post_keys = array_merge(array_keys($_POST ?? []), ['hora_entrada','hora_saida','idprojeto','idestagiario','id']);
@@ -15,6 +16,12 @@ foreach ($_POST as $k => $v) {
 
 // Insert e Update
 if ($_POST) {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
+        session_start();
+        $_SESSION['error'] = 'csrf_fail';
+        header('Location:../../registrohoras.php');
+        exit();
+    }
 
     $controller = new BancoHorasController;
     $total = 0;

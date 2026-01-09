@@ -1,6 +1,7 @@
 <?php
 require_once 'shared/header.php';
 require_once 'vendor/autoload.php';
+require_once 'shared/csrf.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 use Controller\EstagiariosController;
@@ -32,31 +33,12 @@ unset($_SESSION['p'], $_SESSION['error']);
 }
 
 ?>
+<div class="container mt-4">
 <h1> Criar uma senha de acesso</h1>
 <p> Crie uma senha para fazer login no sistema de banco de horas: </p>
 
 <form action= "src/services/PassVerify.php" method="post">
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.mostrarsenha');
-    
-    buttons.forEach(function(toggleButton){
-    toggleButton.addEventListener('click', function() {
-        const targetId= this.getAttribute('data-target');
-const passwordField= document.getElementById(targetId);
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            this.textContent = 'Ocultar senha';
-            passwordField.setAttribute('aria-label', 'Senha visível');
-        } else {
-            passwordField.type = 'password';
-            this.textContent = 'Mostrar senha';
-            passwordField.setAttribute('aria-label', 'Senha oculta');
-        }
-    });
-});
-});
-</script>
+    <?php csrf_input(); ?>
 <!-- fim do js -->
 
 <div class="mb-4">
@@ -81,6 +63,12 @@ const passwordField= document.getElementById(targetId);
      maxlength="32"
      value="<?php echo(isset($p['senha'])? $p['senha'] :'')?> "
      />
+    <div class="mt-2">
+        <div class="progress" style="height:8px;">
+            <div id="senhaStrength" class="progress-bar" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <small id="senhaStrengthText" class="form-text text-muted">Força da senha: </small>
+    </div>
           <?php
 if(isset($error) && $error=='senha_invalida'){
     echo '<small class = "text-danger"> As senhas devem ter no mínimo 8 e no máximo 32 caracteres.</small>';
@@ -98,7 +86,7 @@ echo '<small class ="text-danger"> Não foi possível cadastrar a senha</small>'
 
 ?>
 
-     <button type="button" id="btn1" class="mostrarsenha" data-target="senha1" > Mostrar Senha</button>
+    <button type="button" id="btn1" class="mostrarsenha" data-target="senha1" aria-controls="senha1" aria-pressed="false" aria-label="Mostrar senha"> Mostrar Senha</button>
 
 </div>
 
@@ -112,12 +100,14 @@ echo '<small class ="text-danger"> Não foi possível cadastrar a senha</small>'
      placeholder="Digite novamente a mesma  senha"
      value="<?php echo(isset($p['confirmasenha'])? $p['confirmasenha'] :'')?> "
      />
-     <button type="button"  id="btn2" class="mostrarsenha" data-target="senha2" > Mostrar Senha</button>
+    <button type="button"  id="btn2" class="mostrarsenha" data-target="senha2" aria-controls="senha2" aria-pressed="false" aria-label="Mostrar senha"> Mostrar Senha</button>
 
 </div>
 
 <button type="submit" class="btn btn-success"> Prosseguir</button>
 </form>
+</div>
+ 
 <?php
 require_once 'shared/footer.php';
 ?>

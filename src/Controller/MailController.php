@@ -38,6 +38,27 @@ class MailController {
         $this->mail->Body = '';
     }
     
+    /**
+     * Compose a simple HTML email template with CTA button (inline styles for email clients)
+     */
+    public function setTemplate(string $subject, string $title, string $greetingName, string $message, string $ctaText = '', string $ctaUrl = ''): void {
+        $this->mail->Subject = $subject;
+        $ctaHtml = '';
+        if ($ctaText && $ctaUrl) {
+            $ctaHtml = '<p style="margin-top:18px;"><a href="' . htmlspecialchars($ctaUrl, ENT_QUOTES, 'UTF-8') . '" style="display:inline-block;padding:10px 16px;background:#0d6efd;color:#ffffff;border-radius:6px;text-decoration:none;">' . htmlspecialchars($ctaText, ENT_QUOTES, 'UTF-8') . '</a></p>';
+        }
+        $this->mail->Body = '<!doctype html><html lang="pt-br"><head><meta charset="utf-8"></head><body style="font-family:Arial,Helvetica,sans-serif;color:#222;line-height:1.4;">'
+            . '<div style="max-width:600px;margin:0 auto;padding:18px;">'
+            . '<h2 style="color:#0d6efd;">' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h2>'
+            . '<p>Olá ' . htmlspecialchars($greetingName, ENT_QUOTES, 'UTF-8') . ',</p>'
+            . '<div>' . $message . '</div>'
+            . $ctaHtml
+            . '<p style="margin-top:18px;color:#666;">Atenciosamente,<br/>Equipe do Sistema de Controle de Horários</p>'
+            . '<hr style="border:none;border-top:1px solid #eee;">'
+            . '<small style="color:#999;">Este email foi gerado automaticamente, não é necessário responder.</small>'
+            . '</div></body></html>';
+    }
+    
     public function send() {
         try {
 

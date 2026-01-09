@@ -1,75 +1,76 @@
 <?php
 require_once '../../vendor/autoload.php';
-//importo a orientadores controller e estagiarios
 use Controller\EstagiariosController;
 use Controller\OrientadoresController;
-//inicia sessão
-session_start();
-// Normaliza e sanitiza entradas POST para evitar notices e XSS
-$__expected_post_keys = array_merge(array_keys($_POST ?? []), ['matricula','senha','tipousuario']);
-foreach ($__expected_post_keys as $k) {
-    if (!isset($_POST[$k])) $_POST[$k] = null;
-}
-foreach ($_POST as $k => $v) {
-    if (is_string($v)) $_POST[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
-}
-//verifica se é post:
-    if($_POST){
 
-        //verifica os dados
-        if(!isset($_POST['matricula'], $_POST['senha'], $_POST['tipousuario'])){
-            $_SESSION['error'] = 'faltando_dados';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+    // Limpa qualquer login anterior antes de tentar um novo
+unset($_SESSION['idestagiario'], $_SESSION['idorientador']);
+}
+
+require_once '../../shared/csrf.php';
+
+if ($_POST) {
+    // 1. CSRF Check
+    if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
+        $_SESSION['error'] = 'csrf_fail';
+        header('location:../../index.php');
+        exit;
+    }
+
+    // 2. Coleta de dados (EVITE htmlspecialchars na SENHA antes do verify)
+    $matricula = htmlspecialchars(strip_tags(trim($_POST['matricula'] ?? '')), ENT_QUOTES, 'UTF-8');
+    $senhaRaw = $_POST['senha'] ?? ''; // Pegamos a senha bruta para o password_verify
+    $tipousuario = (int) ($_POST['tipousuario'] ?? 0);
+
+    if (empty($matricula) || empty($senhaRaw) || !in_array($tipousuario, [1, 2])) {
+        $_SESSION['error'] = 'faltando_dados';
+        header('location:../../index.php');
+        exit;
+    }
+
+    $loginSucesso = false;
+
+    try {
+        if ($tipousuario == 1) { // ESTAGIÁRIO
+            $controller = new EstagiariosController();
+            $user = $controller->loadByMatricula($matricula);
+
+            if ($user->total > 0 && password_verify($senhaRaw, $user->getSenha())) {
+                $_SESSION['idestagiario'] = $user->getId();
+                $loginSucesso = true;
+            }
+        } 
+        elseif ($tipousuario == 2) { // ORIENTADOR
+            $controller = new OrientadoresController();
+            $user = $controller->loadByMatricula($matricula);
+
+            if ($user->total > 0 && password_verify($senhaRaw, $user->getSenha())) {
+                $_SESSION['idorientador'] = $user->getId();
+                $loginSucesso = true;
+            }
+        }
+
+        if ($loginSucesso) {
+            unset($_SESSION['error'], $_SESSION['p']);
+            session_regenerate_id(true);
+            header('location:../../home.php');
+            exit;
+        } else {
+            $_SESSION['error'] = 'credenciais_invalidas';
+            error_log("Tentativa de login falhou para matrícula: $matricula");
             header('location:../../index.php');
             exit;
         }
-        //sanitização
-    $matricula = filter_var($_POST['matricula'], FILTER_SANITIZE_STRING);
-$senha = $_POST['senha'];
-$tipousuario = (int) $_POST['tipousuario'];
-//valida o tipo de usuario
-if(!in_array($tipousuario, [1, 2])){
-$_SESSION['error'] = 'tipo_usuario_invalido';
-header('location:../../index.php');
-exit;
-}
-//se existirem dados temporários, remove
-if(isset($_SESSION['p'])){
-    unset($_SESSION['p']);
-}
 
-$loginSucesso= false;
-try{
-if($tipousuario==1){
-    $controller = new EstagiariosController;
-    $loginSucesso = $controller->login($matricula, $senha);
-}
-elseif($tipousuario ==2){
-    $controller = new OrientadoresController;
-    $loginSucesso = $controller->login($matricula, $senha);
-}
-if($loginSucesso){
-    //regenera o id da sessão
-    session_regenerate_id(true);
-    //redireciona pra home.php
-    header('location:../../home.php');
+    } catch (Exception $e) {
+        $_SESSION['error'] = 'erro_sistema';
+        error_log("Erro no login: " . $e->getMessage());
+        header('location:../../index.php');
+        exit;
+    }
+} else {
+    header('Location:../../index.php');
     exit;
 }
-else{
-
-//se houver erro registra no log e coloca na sessão
-$_SESSION['error'] = 'credenciais_invalidas';
-error_log("tentativa de login falhou para matrícula: $matricula");
-}
-}
-catch(Exception $e){
-    $_SESSION['error'] = 'erro_sistema';
-    error_log("Erro no login:".$e->getMessage());
-}
-//se chegou aqui login falhou
-header('location:../../index.php');
-exit;
-}
-    else{//se não é post redireciona
-header('Location:../../index.php');
-exit;
-        }

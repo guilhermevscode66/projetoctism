@@ -3,7 +3,7 @@ namespace Model;
 
 class EstagiariosModel
 {
-    protected $total;
+    public $total;
 protected $idprojeto;
 protected $idorientador;
     
@@ -105,7 +105,38 @@ protected $senha;
     public function __construct() {}
 
     // Métodos de Banco de Dados
+/**
+     * Carrega os dados do estagiário através do e-mail
+     * @param string $email
+     * @return self
+     */
+    public function loadByEmail($email)
+    {
+        $db = new ConexaoMysql();
+        $db->conectar();
+        
+        // Consulta baseada nos campos específicos da sua tabela
+        $resultList = $db->consultarPrepared('SELECT * FROM estagiarios WHERE email = ?', 's', [$email]);
+        
+        $db->desconectar();
+        $this->total = $db->total;
 
+        if ($this->total > 0) {
+            foreach ($resultList as $value) {
+                $this->id = $value['id'];
+                $this->nomecompleto = $value['nomecompleto'];
+                $this->email = $value['email'];
+                $this->matricula = $value['matricula'];
+                $this->supervisor = $value['supervisor'];
+                $this->MinHoras = $value['MinHoras'];
+                $this->senha = $value['senha'];
+                $this->idprojeto = $value['idprojeto'];
+                $this->idorientador = $value['idorientador'];
+            }
+        }
+        
+        return $this;
+    }
     public function loadById($id)
     {
                 $db = new ConexaoMysql();
@@ -179,8 +210,9 @@ INNER JOIN orientadores ON estagiarios.idorientador = orientadores.id
             $obj->nomecompleto = $value['nomecompleto'];
             $obj->email=$value['email'];
             $obj->matricula = $value['matricula'];
-            $obj->projeto = $value['projeto'];
-            $obj->orientador = $value['orientador'];
+            // Use joined names when available; avoid undefined array keys
+            $obj->projeto = isset($value['nome_projeto']) ? $value['nome_projeto'] : null;
+            $obj->orientador = isset($value['nome_orientador']) ? $value['nome_orientador'] : null;
             $obj->supervisor = $value['supervisor'];
             $obj->MinHoras = $value['MinHoras'];
             $obj->senha = $value['senha'];
@@ -226,8 +258,10 @@ INNER JOIN orientadores ON estagiarios.idorientador = orientadores.id
     public function saveSenha(){
         $db = new ConexaoMysql;
         $db->Conectar();
+        // Armazena a senha com hash seguro
         $senha = $this->senha;
-        $result = $db->executarPrepared('UPDATE estagiarios SET senha = ? WHERE id = ?', 'si', [$senha, (int)$this->id]);
+        $hashed = password_hash($senha, PASSWORD_DEFAULT);
+        $result = $db->executarPrepared('UPDATE estagiarios SET senha = ? WHERE id = ?', 'si', [$hashed, (int)$this->id]);
         
         $this->total = $db->total;
         $db->Desconectar();
@@ -238,6 +272,8 @@ INNER JOIN orientadores ON estagiarios.idorientador = orientadores.id
         $db = new ConexaoMysql();
         $db->conectar();
         $id = (int) $id;
+        // remove vínculos em estagiariosprojetos antes de remover o estagiário
+        $db->executarPrepared('DELETE FROM estagiariosprojetos WHERE idestagiarios = ?', 'i', [$id]);
         $db->executarPrepared('DELETE FROM estagiarios WHERE id = ?', 'i', [$id]);
         $db->desconectar();
         $this->total = $db->total;

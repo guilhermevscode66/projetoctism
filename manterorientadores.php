@@ -3,6 +3,7 @@ use Controller\OrientadoresController;
 use Controller\ProjetosController;
 require_once 'shared/header.php';
 require_once 'vendor/autoload.php';
+require_once 'shared/csrf.php';
 $controller = new OrientadoresController;
 if(isset($_REQUEST['id'])){
     $id =$_REQUEST['id'];
@@ -22,6 +23,7 @@ unset($_SESSION['p'], $_SESSION['error']);
 <h1 class ="mb-4"><?=isset($orientador)&&$estagiario->getId() ? 'Editar orientador' : 'Novo orientador'?></h1>
 </div>
 <form method="post" action="src/services/OrientadoresServices.php">
+    <?php csrf_input(); ?>
 <input type="hidden" value="<?php echo(isset($orientador)?$orientador->getId():'' )?>"/>
 <div class="mb-3">
     <label for="nomecompleto" class="form-label"> Nome completo </label>

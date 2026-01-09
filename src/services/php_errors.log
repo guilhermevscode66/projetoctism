@@ -441,3 +441,470 @@ Stack trace:
 [07-Jan-2026 23:14:12 UTC] CreateSenha chamado: ID=86
 [07-Jan-2026 23:14:12 UTC] CreateSenha retornou: 0
 [07-Jan-2026 23:14:12 UTC] Falha ao criar senha para estagiário
+[07-Jan-2026 23:52:54 UTC] === DEBUG PassVerify.php ===
+[07-Jan-2026 23:52:54 UTC] POST data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[07-Jan-2026 23:52:54 UTC] SESSION data: Array
+(
+    [idorientador] => 7
+    [idestagiario] => 86
+)
+
+[07-Jan-2026 23:52:54 UTC] POST recebido
+[07-Jan-2026 23:52:54 UTC] Senha validada com sucesso
+[07-Jan-2026 23:52:54 UTC] Verificando IDs...
+[07-Jan-2026 23:52:54 UTC] idestagiario: 86
+[07-Jan-2026 23:52:54 UTC] idorientador: 
+[07-Jan-2026 23:52:54 UTC] id: NÃO SETADO
+[07-Jan-2026 23:52:54 UTC] Processando como estagiário. ID: 86
+[07-Jan-2026 23:52:54 UTC] Controller de estagiários instanciado
+[07-Jan-2026 23:52:54 UTC] CreateSenha chamado: ID=86
+[07-Jan-2026 23:52:54 UTC] CreateSenha retornou: 0
+[07-Jan-2026 23:52:54 UTC] Falha ao criar senha para estagiário
+[07-Jan-2026 23:58:46 UTC] === DEBUG PassVerify.php ===
+[07-Jan-2026 23:58:46 UTC] POST data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[07-Jan-2026 23:58:46 UTC] SESSION data: Array
+(
+    [idorientador] => 7
+    [idestagiario] => 86
+)
+
+[07-Jan-2026 23:58:46 UTC] POST recebido
+[07-Jan-2026 23:58:46 UTC] Senha validada com sucesso
+[07-Jan-2026 23:58:46 UTC] Verificando IDs...
+[07-Jan-2026 23:58:46 UTC] idestagiario: 86
+[07-Jan-2026 23:58:46 UTC] idorientador: 
+[07-Jan-2026 23:58:46 UTC] id: NÃO SETADO
+[07-Jan-2026 23:58:46 UTC] Processando como estagiário. ID: 86
+[07-Jan-2026 23:58:46 UTC] Controller de estagiários instanciado
+[07-Jan-2026 23:58:46 UTC] CreateSenha chamado: ID=86
+[07-Jan-2026 23:58:46 UTC] CreateSenha retornou: 0
+[07-Jan-2026 23:58:46 UTC] Falha ao criar senha para estagiário
+[08-Jan-2026 00:08:10 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 00:08:10 UTC] POST data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[08-Jan-2026 00:08:10 UTC] SESSION data: Array
+(
+    [idorientador] => 7
+    [idestagiario] => 86
+)
+
+[08-Jan-2026 00:08:10 UTC] POST recebido
+[08-Jan-2026 00:08:10 UTC] Senha validada com sucesso
+[08-Jan-2026 00:08:10 UTC] Verificando IDs...
+[08-Jan-2026 00:08:10 UTC] idestagiario: 86
+[08-Jan-2026 00:08:10 UTC] idorientador: 
+[08-Jan-2026 00:08:10 UTC] id: NÃO SETADO
+[08-Jan-2026 00:08:10 UTC] Processando como estagiário. ID: 86
+[08-Jan-2026 00:08:10 UTC] Controller de estagiários instanciado
+[08-Jan-2026 00:08:10 UTC] CreateSenha chamado: ID=86
+[08-Jan-2026 00:08:10 UTC] CreateSenha retornou: 0
+[08-Jan-2026 00:08:10 UTC] Falha ao criar senha para estagiário
+[08-Jan-2026 00:30:01 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 00:30:01 UTC] POST data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilherme
+    [senha2] => guilherme
+)
+
+[08-Jan-2026 00:30:01 UTC] SESSION data: Array
+(
+    [idorientador] => 7
+    [idestagiario] => 86
+)
+
+[08-Jan-2026 00:30:01 UTC] POST recebido
+[08-Jan-2026 00:30:01 UTC] Senha validada com sucesso
+[08-Jan-2026 00:30:01 UTC] Verificando IDs...
+[08-Jan-2026 00:30:01 UTC] idestagiario: 86
+[08-Jan-2026 00:30:01 UTC] idorientador: 
+[08-Jan-2026 00:30:01 UTC] id: NÃO SETADO
+[08-Jan-2026 00:30:01 UTC] Processando como estagiário. ID: 86
+[08-Jan-2026 00:30:01 UTC] Controller de estagiários instanciado
+[08-Jan-2026 00:30:01 UTC] CreateSenha chamado: ID=86
+[08-Jan-2026 00:30:01 UTC] CreateSenha retornou: 0
+[08-Jan-2026 00:30:01 UTC] Falha ao criar senha para estagiário
+[08-Jan-2026 15:21:50 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 15:21:50 UTC] POST data: Array
+(
+    [idestagiario] => 85
+    [idorientador] => 
+    [senha1] => guilherme 
+    [senha2] => guilherme
+)
+
+[08-Jan-2026 15:21:50 UTC] SESSION data: Array
+(
+)
+
+[08-Jan-2026 15:21:50 UTC] POST recebido
+[08-Jan-2026 15:21:50 UTC] Senha validada com sucesso
+[08-Jan-2026 15:21:50 UTC] Verificando IDs...
+[08-Jan-2026 15:21:50 UTC] idestagiario: 85
+[08-Jan-2026 15:21:50 UTC] idorientador: 
+[08-Jan-2026 15:21:50 UTC] id: NÃO SETADO
+[08-Jan-2026 15:21:50 UTC] Processando como estagiário. ID: 85
+[08-Jan-2026 15:21:50 UTC] Controller de estagiários instanciado
+[08-Jan-2026 15:21:50 UTC] CreateSenha chamado: ID=85
+[08-Jan-2026 15:21:50 UTC] CreateSenha retornou: 1
+[08-Jan-2026 15:21:50 UTC] Senha criada com sucesso para estagiário
+[08-Jan-2026 15:21:50 UTC] Estagiário carregado: SIM
+[08-Jan-2026 15:57:51 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 15:57:51 UTC] POST data: Array
+(
+    [idestagiario] => 85
+    [idorientador] => 
+    [senha1] => estagiario123
+    [senha2] => estagiario123
+)
+
+[08-Jan-2026 15:57:51 UTC] SESSION data: Array
+(
+    [idestagiario] => 85
+)
+
+[08-Jan-2026 15:57:51 UTC] POST recebido
+[08-Jan-2026 15:57:51 UTC] Senha validada com sucesso
+[08-Jan-2026 15:57:51 UTC] Verificando IDs...
+[08-Jan-2026 15:57:51 UTC] idestagiario: 85
+[08-Jan-2026 15:57:51 UTC] idorientador: 
+[08-Jan-2026 15:57:51 UTC] id: NÃO SETADO
+[08-Jan-2026 15:57:51 UTC] Processando como estagiário. ID: 85
+[08-Jan-2026 15:57:51 UTC] Controller de estagiários instanciado
+[08-Jan-2026 15:57:51 UTC] CreateSenha chamado: ID=85
+[08-Jan-2026 15:57:51 UTC] CreateSenha retornou: 1
+[08-Jan-2026 15:57:51 UTC] Senha criada com sucesso para estagiário
+[08-Jan-2026 15:57:51 UTC] Estagiário carregado: SIM
+[08-Jan-2026 16:13:27 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 16:13:27 UTC] POST data: Array
+(
+    [idestagiario] => 88
+    [idorientador] => 
+    [senha1] => estagioctism123 
+    [senha2] => estagioctism123
+)
+
+[08-Jan-2026 16:13:27 UTC] SESSION data: Array
+(
+    [idestagiario] => 85
+    [p] => Array
+        (
+            [id] => 
+            [nomecompleto] => mv4443
+            [email] => guilhermekbaccin@gmail.com
+            [matricula] => 111111
+            [supervisor] => Miguel Brasil
+            [MinHoras] => 202
+            [idprojeto] => 6
+            [idorientador] => 4
+            [nome] => 
+            [senha1] => 
+            [senha2] => 
+            [idestagiario] => 
+            [hora_entrada] => 
+            [hora_saida] => 
+            [tipousuario] => 
+        )
+
+)
+
+[08-Jan-2026 16:13:27 UTC] POST recebido
+[08-Jan-2026 16:13:27 UTC] Senha validada com sucesso
+[08-Jan-2026 16:13:27 UTC] Verificando IDs...
+[08-Jan-2026 16:13:27 UTC] idestagiario: 88
+[08-Jan-2026 16:13:27 UTC] idorientador: 
+[08-Jan-2026 16:13:27 UTC] id: NÃO SETADO
+[08-Jan-2026 16:13:27 UTC] Processando como estagiário. ID: 88
+[08-Jan-2026 16:13:27 UTC] Controller de estagiários instanciado
+[08-Jan-2026 16:13:27 UTC] CreateSenha chamado: ID=88
+[08-Jan-2026 16:13:27 UTC] CreateSenha retornou: 1
+[08-Jan-2026 16:13:27 UTC] Senha criada/atualizada com sucesso para estagiário
+[08-Jan-2026 16:16:00 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 16:16:00 UTC] POST data: Array
+(
+    [idestagiario] => 88
+    [idorientador] => 
+    [senha1] => estagiariofff 
+    [senha2] => estagiariofff
+)
+
+[08-Jan-2026 16:16:00 UTC] SESSION data: Array
+(
+    [idestagiario] => 88
+)
+
+[08-Jan-2026 16:16:00 UTC] POST recebido
+[08-Jan-2026 16:16:00 UTC] Senha validada com sucesso
+[08-Jan-2026 16:16:00 UTC] Verificando IDs...
+[08-Jan-2026 16:16:00 UTC] idestagiario: 88
+[08-Jan-2026 16:16:00 UTC] idorientador: 
+[08-Jan-2026 16:16:00 UTC] id: NÃO SETADO
+[08-Jan-2026 16:16:00 UTC] Processando como estagiário. ID: 88
+[08-Jan-2026 16:16:00 UTC] Controller de estagiários instanciado
+[08-Jan-2026 16:16:00 UTC] CreateSenha chamado: ID=88
+[08-Jan-2026 16:16:00 UTC] CreateSenha retornou: 1
+[08-Jan-2026 16:16:00 UTC] Senha criada/atualizada com sucesso para estagiário
+[08-Jan-2026 17:35:31 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\wamp64\www\estagio\horario_estagio\shared\csrf.php on line 3) in C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php on line 15
+[08-Jan-2026 17:35:31 UTC] PHP Stack trace:
+[08-Jan-2026 17:35:31 UTC] PHP   1. {main}() C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php:0
+[08-Jan-2026 17:35:31 UTC] PHP   2. session_start() C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php:15
+[08-Jan-2026 17:35:31 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 17:35:31 UTC] POST data: Array
+(
+    [csrf_token] => f959376f7a580f37fbc3ac4cb3e89400d303967eecaf9116de363c5101966f60
+    [idestagiario] => 90
+    [idorientador] => 
+    [senha1] => giani123
+    [senha2] => giani123
+)
+
+[08-Jan-2026 17:35:31 UTC] SESSION data: Array
+(
+    [idestagiario] => 88
+    [p] => Array
+        (
+            [csrf_token] => cf0334e01c1df2f8a96fd0f5e346d5428e37779adadfa18565311dbd5d7897a5
+            [id] => 
+            [nomecompleto] => giani
+            [email] => guilhermekbaccin@gmail.com
+            [matricula] => 111222
+            [supervisor] => Miguel Brasil
+            [MinHoras] => 206
+            [idprojeto] => 4
+            [idorientador] => 4
+            [nome] => 
+            [senha1] => 
+            [senha2] => 
+            [idestagiario] => 
+            [hora_entrada] => 
+            [hora_saida] => 
+            [tipousuario] => 
+        )
+
+    [csrf_token] => f959376f7a580f37fbc3ac4cb3e89400d303967eecaf9116de363c5101966f60
+)
+
+[08-Jan-2026 17:35:31 UTC] POST recebido
+[08-Jan-2026 17:35:31 UTC] Senha validada com sucesso
+[08-Jan-2026 17:35:31 UTC] Verificando IDs...
+[08-Jan-2026 17:35:31 UTC] idestagiario: 90
+[08-Jan-2026 17:35:31 UTC] idorientador: 
+[08-Jan-2026 17:35:31 UTC] id: NÃO SETADO
+[08-Jan-2026 17:35:31 UTC] Processando como estagiário. ID: 90
+[08-Jan-2026 17:35:31 UTC] Controller de estagiários instanciado
+[08-Jan-2026 17:35:31 UTC] CreateSenha chamado: ID=90
+[08-Jan-2026 17:35:31 UTC] CreateSenha retornou: 1
+[08-Jan-2026 17:35:31 UTC] Senha criada/atualizada com sucesso para estagiário
+[08-Jan-2026 17:39:12 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\wamp64\www\estagio\horario_estagio\shared\csrf.php on line 3) in C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php on line 15
+[08-Jan-2026 17:39:12 UTC] PHP Stack trace:
+[08-Jan-2026 17:39:12 UTC] PHP   1. {main}() C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php:0
+[08-Jan-2026 17:39:12 UTC] PHP   2. session_start() C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php:15
+[08-Jan-2026 17:39:12 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 17:39:12 UTC] POST data: Array
+(
+    [csrf_token] => 63b0b9b455d1bd8ed136e4f59eafc800e5798d58574e3dd49946797cd908b63b
+    [idestagiario] => 
+    [idorientador] => 19
+    [senha1] => pedro123
+    [senha2] => pedro123
+)
+
+[08-Jan-2026 17:39:12 UTC] SESSION data: Array
+(
+    [idestagiario] => 90
+    [p] => Array
+        (
+            [csrf_token] => eeca450c121400f58b2c724d8ca84bb01a0c8e8841973c889226f5343e002fc8
+            [nome] => Pedro
+            [matricula] => 111333
+            [email] => guilhermekbaccin@gmail.com
+            [idprojeto] => 5
+            [id] => 
+        )
+
+    [csrf_token] => 63b0b9b455d1bd8ed136e4f59eafc800e5798d58574e3dd49946797cd908b63b
+)
+
+[08-Jan-2026 17:39:12 UTC] POST recebido
+[08-Jan-2026 17:39:12 UTC] Senha validada com sucesso
+[08-Jan-2026 17:39:12 UTC] Verificando IDs...
+[08-Jan-2026 17:39:12 UTC] idestagiario: 
+[08-Jan-2026 17:39:12 UTC] idorientador: 19
+[08-Jan-2026 17:39:12 UTC] id: NÃO SETADO
+[08-Jan-2026 17:39:12 UTC] Processando como orientador. ID: 19
+[08-Jan-2026 17:39:12 UTC] Controller de orientadores instanciado
+[08-Jan-2026 17:39:12 UTC] CreateSenha retornou: 1
+[08-Jan-2026 17:39:12 UTC] Senha criada/atualizada com sucesso para orientador
+[08-Jan-2026 18:51:37 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\wamp64\www\estagio\horario_estagio\shared\csrf.php on line 3) in C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php on line 15
+[08-Jan-2026 18:51:37 UTC] PHP Stack trace:
+[08-Jan-2026 18:51:37 UTC] PHP   1. {main}() C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php:0
+[08-Jan-2026 18:51:37 UTC] PHP   2. session_start() C:\wamp64\www\estagio\horario_estagio\src\services\PassVerify.php:15
+[08-Jan-2026 18:51:37 UTC] === DEBUG PassVerify.php ===
+[08-Jan-2026 18:51:37 UTC] POST data: Array
+(
+    [csrf_token] => 9990229461dd2dfbd1ae8878912ed6e54ccb0e13cd4e7c17c491f1c6961c9173
+    [idestagiario] => 
+    [idorientador] => 20
+    [senha1] => arthurcamaraS
+    [senha2] => arthurcamaraS
+)
+
+[08-Jan-2026 18:51:37 UTC] SESSION data: Array
+(
+    [idorientador] => 19
+    [p] => Array
+        (
+            [csrf_token] => 4764a33fadc0e2fc5485fc9a51bd4f54c9947991ab144716d043bc919d5d5058
+            [nome] => Arthur Segati
+            [matricula] => 999999
+            [email] => guilhermekbaccin@gmail.com
+            [idprojeto] => 8
+            [id] => 
+        )
+
+    [csrf_token] => 9990229461dd2dfbd1ae8878912ed6e54ccb0e13cd4e7c17c491f1c6961c9173
+)
+
+[08-Jan-2026 18:51:37 UTC] POST recebido
+[08-Jan-2026 18:51:37 UTC] Senha validada com sucesso
+[08-Jan-2026 18:51:37 UTC] Verificando IDs...
+[08-Jan-2026 18:51:37 UTC] idestagiario: 
+[08-Jan-2026 18:51:37 UTC] idorientador: 20
+[08-Jan-2026 18:51:37 UTC] id: NÃO SETADO
+[08-Jan-2026 18:51:37 UTC] Processando como orientador. ID: 20
+[08-Jan-2026 18:51:37 UTC] Controller de orientadores instanciado
+[08-Jan-2026 18:51:37 UTC] CreateSenha retornou: 1
+[08-Jan-2026 18:51:37 UTC] Senha criada/atualizada com sucesso para orientador
+[09-Jan-2026 15:23:28 America/Sao_Paulo] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\wamp64\www\estagio\horario_estagio\shared\csrf.php on line 3) in C:\wamp64\www\estagio\horario_estagio\src\services\ForgotPass.php on line 31
+[09-Jan-2026 15:23:28 America/Sao_Paulo] PHP Stack trace:
+[09-Jan-2026 15:23:28 America/Sao_Paulo] PHP   1. {main}() C:\wamp64\www\estagio\horario_estagio\src\services\ForgotPass.php:0
+[09-Jan-2026 15:23:28 America/Sao_Paulo] PHP   2. session_start() C:\wamp64\www\estagio\horario_estagio\src\services\ForgotPass.php:31
+[09-Jan-2026 16:09:00 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[09-Jan-2026 16:09:00 America/Sao_Paulo] POST data: Array
+(
+    [csrf_token] => 2167ee54a0d78d430a57601004fb9cfefba0c9063d3a3ec58c410c158effc695
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilhermebaccin
+    [senha2] => guilhermebaccin
+)
+
+[09-Jan-2026 16:09:00 America/Sao_Paulo] SESSION data: Array
+(
+    [csrf_token] => 2167ee54a0d78d430a57601004fb9cfefba0c9063d3a3ec58c410c158effc695
+)
+
+[09-Jan-2026 16:09:00 America/Sao_Paulo] POST recebido
+[09-Jan-2026 16:09:00 America/Sao_Paulo] Senha validada com sucesso
+[09-Jan-2026 16:09:00 America/Sao_Paulo] Verificando IDs...
+[09-Jan-2026 16:09:00 America/Sao_Paulo] idestagiario: 86
+[09-Jan-2026 16:09:00 America/Sao_Paulo] idorientador: 
+[09-Jan-2026 16:09:00 America/Sao_Paulo] id: NÃO SETADO
+[09-Jan-2026 16:09:00 America/Sao_Paulo] Processando como estagiário. ID: 86
+[09-Jan-2026 16:09:00 America/Sao_Paulo] Controller de estagiários instanciado
+[09-Jan-2026 16:09:00 America/Sao_Paulo] CreateSenha chamado: ID=86
+[09-Jan-2026 16:09:00 America/Sao_Paulo] CreateSenha retornou: 1
+[09-Jan-2026 16:09:00 America/Sao_Paulo] Senha criada/atualizada com sucesso para estagiário
+[09-Jan-2026 16:20:11 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[09-Jan-2026 16:20:11 America/Sao_Paulo] POST data: Array
+(
+    [csrf_token] => ccb46c65f6ac23b06b37b6d55c38317f0363de0e1b426f80cd99e0912a2d6b08
+    [idestagiario] => 
+    [idorientador] => 20
+    [senha1] => segati123
+    [senha2] => segati123
+)
+
+[09-Jan-2026 16:20:11 America/Sao_Paulo] SESSION data: Array
+(
+    [idestagiario] => 86
+    [csrf_token] => ccb46c65f6ac23b06b37b6d55c38317f0363de0e1b426f80cd99e0912a2d6b08
+)
+
+[09-Jan-2026 16:20:11 America/Sao_Paulo] POST recebido
+[09-Jan-2026 16:20:11 America/Sao_Paulo] Senha validada com sucesso
+[09-Jan-2026 16:20:11 America/Sao_Paulo] Verificando IDs...
+[09-Jan-2026 16:20:11 America/Sao_Paulo] idestagiario: 
+[09-Jan-2026 16:20:11 America/Sao_Paulo] idorientador: 20
+[09-Jan-2026 16:20:11 America/Sao_Paulo] id: NÃO SETADO
+[09-Jan-2026 16:20:11 America/Sao_Paulo] Processando como orientador. ID: 20
+[09-Jan-2026 16:20:11 America/Sao_Paulo] Controller de orientadores instanciado
+[09-Jan-2026 16:20:11 America/Sao_Paulo] CreateSenha retornou: 1
+[09-Jan-2026 16:20:11 America/Sao_Paulo] Senha criada/atualizada com sucesso para orientador
+[09-Jan-2026 18:17:38 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[09-Jan-2026 18:17:38 America/Sao_Paulo] POST data: Array
+(
+    [csrf_token] => df36c5058b65381437abe6e71cae817f1cf6f16f54fc147d5c4c670fb559799c
+    [idestagiario] => 86
+    [idorientador] => 
+    [senha1] => guilhermebaccin
+    [senha2] => guilhermebaccin
+)
+
+[09-Jan-2026 18:17:38 America/Sao_Paulo] SESSION data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 20
+    [error] => credenciais_invalidas
+    [csrf_token] => df36c5058b65381437abe6e71cae817f1cf6f16f54fc147d5c4c670fb559799c
+)
+
+[09-Jan-2026 18:17:38 America/Sao_Paulo] POST recebido
+[09-Jan-2026 18:17:38 America/Sao_Paulo] Senha validada com sucesso
+[09-Jan-2026 18:17:38 America/Sao_Paulo] Verificando IDs...
+[09-Jan-2026 18:17:38 America/Sao_Paulo] idestagiario: 86
+[09-Jan-2026 18:17:38 America/Sao_Paulo] idorientador: 
+[09-Jan-2026 18:17:38 America/Sao_Paulo] id: NÃO SETADO
+[09-Jan-2026 18:17:38 America/Sao_Paulo] Processando como estagiário. ID: 86
+[09-Jan-2026 18:17:38 America/Sao_Paulo] Controller de estagiários instanciado
+[09-Jan-2026 18:17:38 America/Sao_Paulo] CreateSenha chamado: ID=86
+[09-Jan-2026 18:17:38 America/Sao_Paulo] CreateSenha retornou: 1
+[09-Jan-2026 18:17:38 America/Sao_Paulo] Senha criada/atualizada com sucesso para estagiário
+[09-Jan-2026 18:21:19 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[09-Jan-2026 18:21:19 America/Sao_Paulo] POST data: Array
+(
+    [csrf_token] => 126c5b63ff9d04a755fa0c808831151d89b98194c1de3db71fc65fb829b804d6
+    [idestagiario] => 
+    [idorientador] => 20
+    [senha1] => segati123
+    [senha2] => segati123
+)
+
+[09-Jan-2026 18:21:19 America/Sao_Paulo] SESSION data: Array
+(
+    [idestagiario] => 86
+    [idorientador] => 20
+    [csrf_token] => 126c5b63ff9d04a755fa0c808831151d89b98194c1de3db71fc65fb829b804d6
+)
+
+[09-Jan-2026 18:21:19 America/Sao_Paulo] POST recebido
+[09-Jan-2026 18:21:19 America/Sao_Paulo] Senha validada com sucesso
+[09-Jan-2026 18:21:19 America/Sao_Paulo] Verificando IDs...
+[09-Jan-2026 18:21:19 America/Sao_Paulo] idestagiario: 
+[09-Jan-2026 18:21:19 America/Sao_Paulo] idorientador: 20
+[09-Jan-2026 18:21:19 America/Sao_Paulo] id: NÃO SETADO
+[09-Jan-2026 18:21:19 America/Sao_Paulo] Processando como orientador. ID: 20
+[09-Jan-2026 18:21:19 America/Sao_Paulo] Controller de orientadores instanciado
+[09-Jan-2026 18:21:19 America/Sao_Paulo] CreateSenha retornou: 1
+[09-Jan-2026 18:21:19 America/Sao_Paulo] Senha criada/atualizada com sucesso para orientador

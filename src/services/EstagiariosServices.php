@@ -2,40 +2,43 @@
 use Controller\EstagiariosController;
 use Controller\MailController;
 require_once '../../vendor/autoload.php';
+require_once '../../shared/csrf.php';
+require_once '../../config.php';
 
-// Normaliza e sanitiza entradas POST para evitar notices e XSS
-$__expected_post_keys = array_merge(array_keys($_POST ?? []), ['nomecompleto','nome','email','matricula','supervisor','idprojeto','idorientador','id','senha1','senha2','idestagiario','hora_entrada','hora_saida','tipousuario']);
+// 1. Normalização de dados
+$__expected_post_keys = array_merge(array_keys($_POST ?? []), ['nomecompleto','email','matricula','supervisor','idprojeto','idorientador','id']);
 foreach ($__expected_post_keys as $k) {
     if (!isset($_POST[$k])) $_POST[$k] = null;
 }
-foreach ($_POST as $k => $v) {
-    if (is_string($v)) $_POST[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
-}
 
+// 2. Processamento via POST (Insert/Update)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
+        session_start();
+        $_SESSION['error'] = 'csrf_fail';
+        header('Location:../../manterestagiarios.php');
+        exit();
+    }
 
-// Insert e Update
-if ($_POST) {
-    //cria uma sessão para que quando o usuário retornar para o formulario por um erro, não perca os dados
     session_start();
-    $_SESSION['p']=$_POST;
-// elimina os caracteres especiais dos campos de cadastro de usuarios...
-    $_POST['nomecompleto']=htmlspecialchars($_POST['nomecompleto']);
-    $_POST['email']=htmlspecialchars($_POST['email']);
-$_POST['matricula']=htmlspecialchars($_POST['matricula']);
+    $_SESSION['p'] = $_POST;
 
-$_POST['supervisor']=htmlspecialchars($_POST['supervisor']);
-$_POST['idprojeto']= htmlspecialchars($_POST['idprojeto']);
-$_POST['idorientador']= htmlspecialchars($_POST['idorientador']);
+    // Validação de e-mail e matrícula
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+        header('Location:../../manterestagiarios.php?cod=email_invalido');
+        exit();
+    }
+    
+    if (!is_numeric($_POST['matricula'])) {
+        header('Location:../../manterestagiarios.php?cod=matricula_invalida');
+        exit();
+    }
 
-//fim da parte de protecao sql
-//validação,  redirect e erros
-//se o email informado é válido e a matrícula é numérica  
-if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ){
-    if(is_numeric($_POST['matricula'])){
-        $matricula =$_POST['matricula'];
-    $controller = new EstagiariosController;
-    $total = 0;
-
+    // Se passou na validação, processa
+    $controller = new EstagiariosController();
+    $matricula = $_POST['matricula'];
+    
     if (empty($_POST['id'])) {
         $total = $controller->create($_POST);
     } else {
@@ -43,73 +46,61 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ){
     }
 
     if ($total > 0) {
-        //se o total for maior que 0 conseguiu cadastrar
-        //envia o email para criar uma senha
-
-        // carregar estagiário recém-criado para obter id e email
         $est = $controller->loadByMatricula($matricula);
-        $recipient = $est->getEmail();
+        // Lógica de envio de e-mail de boas-vindas aqui...
+        header('Location:../../aviso_sobre_email_enviado.php');
+        exit();
+    }
 
-        $nomeParaEmail = '';
-        if (!empty($_POST['nomecompleto'])) {
-            $nomeParaEmail = htmlspecialchars($_POST['nomecompleto']);
-        } elseif (method_exists($est, 'getNomeCompleto')) {
-            $nomeParaEmail = htmlspecialchars($est->getNomeCompleto());
-        }
-
-        $email = new MailController;
-        $email->mail->clearAddresses();
-        $email->mail->addAddress($recipient);
-        $email->mail->Subject = 'naoresponda, criação de senha - Night Wind';
-        $email->mail->Body = '<!DOCTYPE html><html lang="pt-br"><body>' .
-            '<p>Olá, bem-vindo/a ao sistema de banco de horas do Night Wind. Recebemos uma solicitação de criação de senha para a conta de nome ' . $nomeParaEmail . ' e email ' . htmlspecialchars($recipient) . '.</p>' .
-            '<p>Se foi você que solicitou, por favor clique no link abaixo para criar sua senha:</p>' .
-            '<p><a href="http://localhost:80/setpassword.php?idestagiario=' . (int)$est->getId() . '">Crie sua senha aqui</a></p>' .
-            '<p>Atenciosamente: Equipe Night Wind.</p>' .
-            '<footer>Esse email foi gerado automaticamente, não é necessário responder.</footer>' .
-            '</body></html>';
-
-        if ($email->mail->send()) {
-            header('Location:../../aviso_sobre_email_enviado.php');
-        }
-
-        
-    } 
-        
+} 
+// 3. Processamento via GET (Delete)
+else if (isset($_GET['id'])) {
     
-}
-}
-//se o email informado não é válido ou a senha não é numérica 
-
-else if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
-    header('Location:../../manterestagiarios.php?cod=email_invalido');
+    $id = (int)$_GET['id'];
+    $controller = new EstagiariosController();
     
-}
-else if(!is_numeric($_POST['matricula'])){    
-    header('Location:../../manterestagiarios.php?cod=matricula_invalida');
+    $est = $controller->loadById($id);
 
-}
-//fim da validacao
-}//fim do post
- else { //se não vier de post
-    // Delete
-    if (isset($_REQUEST['id'])) {
-        $id = $_REQUEST['id'];
-        $controller = new EstagiariosController;
+    if ($est) {
+        $recipient = method_exists($est, 'getEmail') ? $est->getEmail() : null;
+        $nomeEstagiario = method_exists($est, 'getNomecompleto') ? $est->getNomecompleto() : 'Usuário';
+
         $total = $controller->delete($id);
-        if ($total > 0) {
-            //se o total for maior que zero conseguiu deletar envia o email de aviso
-            $email = new MailController;
-            $sub= $email ->mail->Subject='naoresponder, estagiario deletado, Night Wind';
-            $msg= $email->mail->Body='<p>Presado estagiário, você foi excluído de um projeto do night Wind</p>.';
-            if($email->send()){
 
-            header ('location:\listarEstagiarios.php');
-            exit;
+        if ($total > 0) {
+            if (!empty($recipient)) {
+                try {
+                    $email = new MailController();
+                            // 1. Primeiro define o template (isso geralmente limpa o corpo do e-mail)
+        $email->setTemplate(
+            'Não responda — Cadastro Removido', 
+            'Estagiário removido', 
+            $nomeEstagiario, 
+            '<p>O cadastro do estagiário foi removido do sistema.</p>', 
+            'Acessar Sistema', 
+            BASE_URL . '/listarestagiarios.php'
+        );
+
+                            // Garante que não existam destinatários residuais na memória da classe
+        if (isset($email->mail)) {
+            $email->mail->clearAddresses();
+            $email->mail->addAddress($recipient);
+        }
+                    $subject = 'Não responda — Cadastro Removido';
+                    $title = 'Estagiário removido';
+                    $message = '<p>O cadastro foi removido do sistema.</p>';
+                    
+                    $email->setTemplate($subject, $title, $nomeEstagiario, $message, 'Ver sistema', BASE_URL . '/listarestagiarios.php');
+                    $email->send();
+                } catch (Exception $e) {
+                    // Erro no envio do e-mail não deve travar a deleção
+                }
             }
-        } else {
-            header ('location:\listarEstagiarios.php?msg=4');
-            exit;
+            header('Location: ../../listarestagiarios.php?msg=sucesso_delete');
+            exit();
         }
     }
- }
+    
+    header('Location: ../../listarestagiarios.php?msg=erro_delete');
+    exit();
+}

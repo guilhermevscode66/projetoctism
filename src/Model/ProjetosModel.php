@@ -111,9 +111,13 @@ class ProjetosModel
     {
         $db = new ConexaoMysql();
         $db->conectar();
+        // limpar referências: remover associação em estagiarios e em estagiariosprojetos
+        $db->executarPrepared('UPDATE estagiarios SET idprojeto = NULL WHERE idprojeto = ?', 'i', [(int)$id]);
+        $db->executarPrepared('DELETE FROM estagiariosprojetos WHERE idprojeto = ?', 'i', [(int)$id]);
+        // por fim, remover o projeto
         $db->executarPrepared('DELETE FROM projetos WHERE id = ?', 'i', [(int)$id]);
-        $db->desconectar();
         $this->total = $db->total;
+        $db->desconectar();
         return $this->total;
     }
 }
