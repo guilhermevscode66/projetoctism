@@ -1,1 +1,2 @@
-src/services/php_errors.log
+/vendor
+php_errors.log
