@@ -24,6 +24,8 @@ public function loadByMatricula($matricula){
 }
     public function create($data) {
         $model = new EstagiariosModel();
+        var_dump($data);
+        die("Recebndo dados para criação de estagiario");
         $model->setNomecompleto($data['nomecompleto'] ?? '');
         $model->setMatricula($data['matricula'] ?? '');
         $model->setEmail($data['email'] ?? '');

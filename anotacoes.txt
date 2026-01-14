@@ -16,3 +16,6 @@ Utilizar um estagiário que já tenha idprojeto e idestagiario
 retirar as mensõesao estagiariosprojetos_id da controller
 redirecionar para horastrabalhadas.php com o idprojeto e o idestagiario
 reesgatar o idestagiario e o idprojeto na horastrabalhadas.php
+
+feito: implementado deletar estagiário só com o id do orientador+ mensagens de erro, corrigida a segurança na orientadoresServices, agora a Services apenas recebe os dados e redireciona com erro caso encontre um ero, htmlspecialchars só é usado para printar informações sobre estagiários e orientadores.
+Corrigido cadastro de orientador para que só aqueles que tenham um projeto consigam deletá-lo, otimização nas tabelas de orientador e estagiariosprojetos para não permitir duplicações de usuários.

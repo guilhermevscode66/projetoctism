@@ -27,20 +27,19 @@ public function loadByEmail($email){
     }
     
     public function create($data) {
-        $model = new orientadoresModel();
-        $model->setnomeorientador($data['nome']);
+            
+        $model = new OrientadoresModel();
+        $model->setnomeorientador($data['nomeorientador']);
         $model->setMatricula($data['matricula']);
 $model->setEmail($data['email']);
-$model->setidprojeto($data['idprojeto']);
         return $model->save(); // Salva no banco
     }
 
     public function update($id, $data) {
         $model = new OrientadoresModel();
-        
-        $model->setnomeorientador($data['nome']);
+            $model->setId($id);   
+        $model->setnomeorientador($data['nomeorientador']);
         $model->setEmail($data['email']);
-$model->setidprojeto($data['idprojeto']);
         
         return $model->save(); // Atualiza no banco
     }

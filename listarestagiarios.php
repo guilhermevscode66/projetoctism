@@ -1,102 +1,64 @@
 <?php
+
 require_once 'vendor/autoload.php';
 require_once 'shared/header.php';
-
-// ... seus requires anteriores ...
-
-$msg = $_GET['msg'] ?? null;
-$alerta = '';
-
-if ($msg === 'sucesso_delete') {
-    $alerta = ['classe' => 'alert-success', 'texto' => 'Estagiário removido com sucesso!'];
-} elseif ($msg === 'erro_delete') {
-    $alerta = ['classe' => 'alert-danger', 'texto' => 'Erro ao tentar remover o estagiário.'];
+if(isset($msg)){
+if($msg ==='erro_nao_encontrado'){
+$alerta = ['classe' => 'alert-warning', 'texto' => ' Estagiário não encontrado.'];
 }
+elseif($msg === 'sucesso_delete'){
+    $alerta = ['classe' => 'alert-success', 'texto' => ' Estagiário excluído com sucesso.'];
+}elseif($msg ==='successo_update'){
+    $alerta = ['classe' => 'alert-success', 'texto' => ' Estagiário atualizado com sucesso.'];
 
+} elseif ($msg === 'erro_delete') {
+    $alerta = ['classe' => 'alert-danger', 'texto' => 'Erro ao excluir o estagiário. Por favor, tente novamente'];
+
+
+} elseif ($msg === 'erro_permissao') {
+    $alerta = ['classe' => 'alert-warning', 'texto' => 'Você não tem permissão para excluir este estagiário!'];
+}
+}
 use Controller\EstagiariosController;
-use Controller\OrientadoresController;
-
 $controller = new EstagiariosController();
 $estagiarios = $controller->loadAll();
+
+// ID do orientador logado (ajuste conforme seu sistema de login)
+$idLogado = $_SESSION['idorientador'] ?? null; 
 ?>
 
-<div>
-    <h2 class="mt-4">Lista de estagiários</h2>
-</div>
-<?php if ($alerta): ?>
-    <div class="alert <?php echo $alerta['classe']; ?> alert-dismissible fade show" role="alert">
-        <strong>Aviso:</strong> <?php echo $alerta['texto']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
-
-<div class="table-responsive-md">
-    <table class="table table-primary">
-        <thead>
-            <tr>
-                <th scope="col">Nome completo</th>
-                <th scope="col">Email</th>
-                <th scope="col">Matrícula</th>
-                <th scope="col">Projeto</th>
-                <th scope="col">Orientador</th>
-                <th scope="col">Supervisor</th>
-                <th scope="col">Mínimo de horas</th>
-                <th scope="col">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($estagiarios)): ?>
-                <?php foreach ($estagiarios as $value): ?>
+<div class="container mt-4">
+    <h2>Lista de Estagiários</h2>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nome</th>
+                    <th>Projeto</th>
+                    <th>Orientador</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($estagiarios as $est): ?>
                     <tr>
-                        <td><?php echo $value->getNomecompleto(); ?></td>
-                        <td><?php echo $value->getEmail(); ?></td>
-                        <td><?php echo $value->getMatricula(); ?></td>
-                        <td><?php echo $value->getNomeProjeto(); ?></td>
-                        <td><?php echo $value->getNomeOrientador(); ?></td>
-                        <td><?php echo $value->getSupervisor(); ?></td>
-                        <td><?php echo $value->getMinHoras(); ?></td>
+                        <td><?= htmlspecialchars($est->getNomecompleto()) ?></td>
+                        <td><?= htmlspecialchars($est->getNomeProjeto()) ?></td>
+                        <td><?= htmlspecialchars($est->getNomeOrientador()) ?></td>
                         <td>
-                            <a class="btn btn-sm btn-warning" href="registrohoras.php?idprojeto=<?php echo $value->getidprojeto(); ?>&idestagiario=<?php echo $value->getId(); ?>">Horas</a>
+                            <a class="btn btn-sm btn-warning" href="registrohoras.php?idestagiario=<?= $est->getId() ?>">Horas</a>
                             
-                            <a class="btn btn-sm btn-info" href="manterestagiarios.php?id=<?php echo $value->getId(); ?>">Editar</a>
-                            
-                            <a class="btn btn-sm btn-danger" href="src/services/EstagiariosServices.php?id=<?php echo $value->getId(); ?>" 
-                               onclick="return confirm('Deseja excluir esse estagiário? Essa ação é irreversível.');">Excluir</a>
+                            <?php if ($est->getidorientador() == $idLogado): ?>
+                                <a class="btn btn-sm btn-info" href="manterestagiarios.php?id=<?= $est->getId() ?>">Editar</a>
+                                <a class="btn btn-sm btn-danger" href="src/services/EstagiariosServices.php?id=<?= $est->getId() ?>" 
+                                   onclick="return confirm('Excluir este estagiário?')">Excluir</a>
+                            <?php else: ?>
+                                <span class="badge bg-secondary">Somente leitura</span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="8" class="text-center">Nenhum estagiário cadastrado.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<a href="home.php" class="btn btn-secondary">Voltar</a>
-<script>
-    // Espera o documento carregar completamente
-    document.addEventListener('DOMContentLoaded', function() {
-        // Seleciona todos os alertas na página
-        const alertas = document.querySelectorAll('.alert');
-
-        alertas.forEach(function(alerta) {
-            // Define um tempo de 4 segundos (4000ms) antes de começar a sumir
-            setTimeout(function() {
-                // Adiciona um efeito de transição suave usando CSS
-                alerta.style.transition = "opacity 0.6s ease";
-                alerta.style.opacity = "0";
-
-                // Após a transição terminar, remove o elemento do layout
-                setTimeout(function() {
-                    alerta.remove();
-                }, 600); 
-            }, 4000);
-        });
-    });
-</script>
-
-<?php
-require_once 'shared/footer.php';
-?>

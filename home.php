@@ -1,8 +1,5 @@
 <?php
 // Mover o session_start para o topo evita avisos de "headers already sent"
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
 require_once 'shared/header.php';
 require_once 'vendor/autoload.php';

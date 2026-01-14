@@ -115,7 +115,7 @@ public function loadByIpes($idprojeto, $idestagiario){
     {
         $db = new ConexaoMysql();
         $db->conectar();
-        $sql = 'SELECT * FROM bancohoras;';
+        $sql = 'SELECT * FROM bancohoras ORDER BY DESC;';
         $resultList = $db->consultarPrepared($sql);
         $db->desconectar();
         $this->total = $db->total;

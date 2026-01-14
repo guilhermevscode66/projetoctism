@@ -5,44 +5,63 @@ use Controller\OrientadoresController;
 require_once '../../vendor/autoload.php';
 require_once '../../config.php';
 require_once '../../shared/csrf.php';
-
-// Normaliza e sanitiza entradas POST para evitar notices e XSS
-$__expected_post_keys = array_merge(array_keys($_POST ?? []), ['nome','matricula','email','id']);
-foreach ($__expected_post_keys as $k) {
-    if (!isset($_POST[$k])) $_POST[$k] = null;
-}
-foreach ($_POST as $k => $v) {
-    if (is_string($v)) $_POST[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
-}
-
+session_start();
 // Insert e Update
-if ($_POST) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
-        session_start();
+        
         $_SESSION['error'] = 'csrf_fail';
         header('Location:../../manterorientadores.php');
         exit();
     }
     //cria uma sessão para armazenar os dados que vão voltar para o formulário em caso de erro
-    session_start();
+    
     $_SESSION['p'] = $_POST;
     //elimina caracteres especiais dos campos de cadastro de orientadores...
-    $_POST['nome'] = htmlspecialchars($_POST['nome']);
-    $_POST['matricula'] = htmlspecialchars($_POST['matricula']);
-    $_POST['email'] = htmlspecialchars($_POST['email']);
+    $id = (int)($_POST['id'] ?? 0);
+$nome = $_POST['nome'];
+$matricula = $_POST['matricula'];
+$matricula = trim($matricula);
+    $email = $_POST['email'];
+$email = trim($email);
+
+
     //fim da parte de protecao sql
     
     //valida se o email é válido e a matrícula é numérica
     
-    if(is_numeric($_POST['matricula'])){
-    if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+    if(!is_numeric($_POST['matricula'])){
+    $_SESSION['error']='matricula_invalida';
+    header('location:../../manterorientadores.php');
+    exit();
+}
+    if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+    $_SESSION['error']='email_invalido';
+    header('location:../../manterorientadores.php');
+    exit();
+    }
+    //se chegou aqui, dados válidos
         $controller = new OrientadoresController;
         $total = 0;
+//passar os dados
+$dados =[
+    'nomeorientador' => $nome,
+    'matricula' => $matricula,
+    'email' => $email
+];
+        if (empty($id)) {
+//verifica se a matrícula já existe    $orientadorExistente = $controller->loadByMatricula($matricula);
+    $orientadorExistente = $controller->loadByMatricula($matricula);    
+    // Se o retorno não for nulo, significa que já existe um orientador com essa matrícula
+    if ($orientadorExistente) {
+        $_SESSION['error'] = 'matricula_duplicada';
+        header('Location: ../../manterorientadores.php');
+        exit();
+    }
 
-        if (empty($_POST['id'])) {
-            $total = $controller->create($_POST);
+            $total = $controller->create($dados);
         } else {
-            $total = $controller->update($_POST['id'], $_POST);
+            $total = $controller->update($id, $dados);
         }
 if($total>0){
     //envia o email para criar uma senha
@@ -55,25 +74,31 @@ if($total>0){
     $email->mail->addAddress($recipient);
     $subject = 'Não responda — Criação de senha';
     $title = 'Criação de senha';
-    $name = htmlspecialchars($_POST['nome']);
+$name = htmlspecialchars($_POST['nome']);
     $message = '<p>Bem-vindo/a ao sistema de controle de horários. Recebemos uma solicitação de criação de senha para a conta de nome ' . $name . ' e email ' . htmlspecialchars($recipient) . '.</p>' .
                '<p>Se foi você que solicitou, clique no botão abaixo para criar sua senha:</p>';
     $email->setTemplate($subject, $title, $name, $message, 'Criar senha', BASE_URL . '/setpassword.php?idorientador=' . (int)$orient->getId());
     if ($email->send()) {
+                    unset($_SESSION['p']); // Limpa o rascunho do form se deu certo
         header('Location:../../aviso_sobre_email_enviado.php');
+        exit();
     }
+    else{
+        // se falhar no envio do email, redireciona para manterorientadores com mensagem de erro
+        $_SESSION['error']='email_fail';
+        header('location:../../manterorientadores.php'); 
+        exit();
         }              
     }
         else{
+            //se o cadastro falhar
+        $_SESSION['error']='db_fail';
             header('location:../../manterorientadores.php');
+            exit();
         }
-    }else{
-        header('location:../../manterorientadores.php');
-    }
-}else{
     // Delete
-    if (isset($_REQUEST['id'])) {
-        $id = $_REQUEST['id'];
+    } elseif (isset($_GET['id'])) {
+        $id =(int) $_REQUEST['id'];
         $controller = new OrientadoresController;
         // carrega antes de deletar para obter dados para notificação
         $orient = $controller->loadById($id);
@@ -91,9 +116,12 @@ if($total>0){
                 $email->send();
             }
             header('Location:../../manterorientadores.php');
+            exit();
         } else { // se não conseguiu deletar apenas redireciona.
-            header('Location:../../listarorientadores.php?msg=2');
+         $_SESSION['error']='delete_error';
+            header('Location:../../listarorientadores.php');
+            exit();
         }
     }
-}
+
 ?>

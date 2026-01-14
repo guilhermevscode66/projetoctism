@@ -4,27 +4,34 @@ use Controller\MailController;
 require_once '../../vendor/autoload.php';
 require_once '../../shared/csrf.php';
 require_once '../../config.php';
-
-// 1. Normalização de dados
-$__expected_post_keys = array_merge(array_keys($_POST ?? []), ['nomecompleto','email','matricula','supervisor','idprojeto','idorientador','id']);
-foreach ($__expected_post_keys as $k) {
-    if (!isset($_POST[$k])) $_POST[$k] = null;
-}
-
-// 2. Processamento via POST (Insert/Update)
+session_start();
+// Processamento via POST (Insert/Update)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
-        session_start();
+        
         $_SESSION['error'] = 'csrf_fail';
         header('Location:../../manterestagiarios.php');
         exit();
     }
 
-    session_start();
+    
     $_SESSION['p'] = $_POST;
 
     // Validação de e-mail e matrícula
+    $id =(int) $_POST['id'] ?? null;
+    $nome= $_POST['nomecompleto'];
+    $email = trim($_POST['email']); 
+    $matricula = trim($_POST['matricula']);
+    $supervisor = $_POST['supervisor'];
+    $projeto = $_POST['idprojeto'];
+        $orientador = $_POST['idorientador'];
+        $minHoras= $_POST['minhoras'];
+        if($nome =='' || $email=='' || $matricula==''|| $supervisor=='' || $projeto=='' || $orientador=='' || $minHoras==''){
+            
+            header('Location:../../manterestagiarios.php?cod=campos_vazios');
+            exit();
+        }
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
         header('Location:../../manterestagiarios.php?cod=email_invalido');
         exit();
@@ -37,70 +44,115 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Se passou na validação, processa
     $controller = new EstagiariosController();
-    $matricula = $_POST['matricula'];
-    
-    if (empty($_POST['id'])) {
+    //recebe osdados do formulário
+    $dados  = [
+        'nomecompleto' => $nome,
+        'email' => $email,
+        'matricula' => $matricula,
+        'supervisor' => $supervisor,
+        'idprojeto' => $projeto,
+        'idorientador' => $orientador,
+        'minhoras' => $minHoras
+    ];
+    if (empty($id)) {
+        //verifica se a matrícula já existe
+        $estagiarioExistente = $controller->loadByMatricula($matricula);    
+        // Se o retorno não for nulo, significa que já existe
+        if ($estagiarioExistente) {
+            $_SESSION['error'] = 'matricula_duplicada';
+            header('Location: ../../manterestagiarios.php');
+            exit();
+        }
         $total = $controller->create($_POST);
     } else {
         $total = $controller->update($_POST['id'], $_POST);
     }
-
-    if ($total > 0) {
+if ($total > 0) {
         $est = $controller->loadByMatricula($matricula);
-        // Lógica de envio de e-mail de boas-vindas aqui...
-        header('Location:../../aviso_sobre_email_enviado.php');
-        exit();
-    }
+        $idNovoEstagiario = $est->getId();
+        $recipient = $est->getEmail();
+        $nomeEstagiario = $est->getNomecompleto();
 
-} 
-// 3. Processamento via GET (Delete)
-else if (isset($_GET['id'])) {
-    
-    $id = (int)$_GET['id'];
-    $controller = new EstagiariosController();
-    
-    $est = $controller->loadById($id);
+        // Só envia e-mail de "Boas-vindas/Criar senha" se for um NOVO cadastro
+        if (empty($_POST['id'])) {
+            $mail = new MailController();
+            $mail->mail->clearAddresses();
+            $mail->mail->addAddress($recipient);
+            
+            $subject = 'Criação de Senha — Sistema de Horas';
+            $title = 'Bem-vindo(a) ao Sistema!';
+            
+            $message = "<p>Olá, <strong>" . htmlspecialchars($nomeEstagiario) . "</strong>.</p>";
+            $message .= "<p>Seu cadastro como estagiário foi realizado com sucesso.</p>";
+            $message .= "<p>Para começar a registrar suas horas, clique no botão abaixo para definir sua senha de acesso.</p>";
 
-    if ($est) {
-        $recipient = method_exists($est, 'getEmail') ? $est->getEmail() : null;
-        $nomeEstagiario = method_exists($est, 'getNomecompleto') ? $est->getNomecompleto() : 'Usuário';
+            // Note que passamos idestagiario na URL para diferenciar do orientador na setpassword.php
+            $link = BASE_URL . '/setpassword.php?idestagiario=' . (int)$idNovoEstagiario;
+            
+            $mail->setTemplate($subject, $title, $nomeEstagiario, $message, 'Criar minha senha', $link);
 
-        $total = $controller->delete($id);
-
-        if ($total > 0) {
-            if (!empty($recipient)) {
-                try {
-                    $email = new MailController();
-                            // 1. Primeiro define o template (isso geralmente limpa o corpo do e-mail)
-        $email->setTemplate(
-            'Não responda — Cadastro Removido', 
-            'Estagiário removido', 
-            $nomeEstagiario, 
-            '<p>O cadastro do estagiário foi removido do sistema.</p>', 
-            'Acessar Sistema', 
-            BASE_URL . '/listarestagiarios.php'
-        );
-
-                            // Garante que não existam destinatários residuais na memória da classe
-        if (isset($email->mail)) {
-            $email->mail->clearAddresses();
-            $email->mail->addAddress($recipient);
-        }
-                    $subject = 'Não responda — Cadastro Removido';
-                    $title = 'Estagiário removido';
-                    $message = '<p>O cadastro foi removido do sistema.</p>';
-                    
-                    $email->setTemplate($subject, $title, $nomeEstagiario, $message, 'Ver sistema', BASE_URL . '/listarestagiarios.php');
-                    $email->send();
-                } catch (Exception $e) {
-                    // Erro no envio do e-mail não deve travar a deleção
-                }
+            if ($mail->send()) {
+                unset($_SESSION['p']); // Limpa rascunho do formulário
+                header('Location:../../aviso_sobre_email_enviado.php');
+                exit();
+            } else {
+                // Se o e-mail falhar, redireciona com erro, mas o cadastro no banco já foi feito
+                $_SESSION['error'] = 'email_fail';
+                header('Location:../../manterestagiarios.php?cod=erro_email');
+                exit();
             }
-            header('Location: ../../listarestagiarios.php?msg=sucesso_delete');
+        } else {
+            // Se for apenas um UPDATE, redireciona direto para a lista
+            unset($_SESSION['p']);
+            header('Location:../../listarestagiarios.php?msg=sucesso_update');
             exit();
         }
     }
+    }
+
+// 3. Processamento via GET (Delete)
+
+
+// Bloco de Delete
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+    session_start();
     
-    header('Location: ../../listarestagiarios.php?msg=erro_delete');
+    $idEstagiario = (int)$_GET['id'];
+    $idLogado = $_SESSION['idlogado'] ?? null; // Sua variável de sessão
+
+    if (!$idLogado) {
+        header('Location: ../../index.php?error=sessao_expirada');
+        exit();
+    }
+
+    $controller = new EstagiariosController();
+    
+    // 1. Primeiro, carregamos o estagiário para verificar quem é o orientador dele
+    $estagiario = $controller->loadById($idEstagiario);
+
+    if (!$estagiario) {
+        header('Location: ../../listarestagiarios.php?msg=erro_nao_encontrado');
+        exit();
+    }
+
+    // 2. VALIDAÇÃO DE PROPRIEDADE (O "Pulo do Gato")
+    // Verificamos se o idorientador do estagiário no banco é igual ao idlogado na sessão
+    if ($estagiario->getidorientador() == $idLogado) {
+        
+        $sucesso = $controller->delete($idEstagiario);
+        
+        if ($sucesso) {
+            header('Location: ../../listarestagiarios.php?msg=sucesso_delete');
+        } else {
+            header('Location: ../../listarestagiarios.php?msg=erro_delete');
+        }
+        
+    } else {
+        // Tentativa de invasão ou erro de permissão
+        // Logar essa tentativa pode ser útil para segurança
+        error_log("Tentativa de exclusão não autorizada: Orientador $idLogado tentou excluir Estagiário $idEstagiario");
+        header('Location: ../../listarestagiarios.php?msg=erro_permissao');
+    }
     exit();
 }
+?>

@@ -35,16 +35,17 @@ class EstagiariosProjetosModel
         return $this;
     }
 
-    protected $idestagiarios;
+    protected $idestagiario;
 
-    public function getIdestagiarios()
+    public function getidestagiario()
     {
-        return $this->idestagiarios;
+        return $this->idestagiario;
     }
 
-    public function setIdestagiarios($idestagiarios): self
+    public function setidestagiario($idestagiario): self
+
     {
-        $this->idestagiarios = $idestagiarios;
+        $this->idestagiario = $idestagiario;
         return $this;
     }
 
@@ -62,7 +63,9 @@ class EstagiariosProjetosModel
             foreach ($resultList as $value) {
                 $this->id = $value['id'];
                 $this->idprojeto = $value['idprojeto'];
-                $this->idestagiarios = $value['idestagiarios'];
+                $this->idestagiario
+ = $value['idestagiario
+'];
             }
         }
         $db->desconectar();
@@ -82,7 +85,9 @@ class EstagiariosProjetosModel
             $obj = new  EstagiariosprojetosModel;
             $obj->id = $value['id'];
             $obj->idprojeto = $value['idprojeto'];
-            $obj->idestagiarios = $value['idestagiarios'];
+            $obj->idestagiario
+ = $value['idestagiario
+'];
             $resultListObject[] =  $obj;
         }
         return $resultListObject;
@@ -93,12 +98,16 @@ class EstagiariosProjetosModel
         $db = new ConexaoMysql();
         $db->conectar();
             if (empty($this->getId())) {
-                $idest = (int)$this->getIdestagiarios();
+                $idest = (int)$this->getidestagiario
+();
                 $idproj = (int)$this->getIdprojeto();
-                $db->executarPrepared('INSERT INTO estagiariosprojetos (idestagiarios, idprojeto) VALUES (?, ?)', 'ii', [$idest, $idproj]);
+                $db->executarPrepared('INSERT INTO estagiariosprojetos (idestagiario
+, idprojeto) VALUES (?, ?)', 'ii', [$idest, $idproj]);
 
             } else {
-                $db->executarPrepared('UPDATE estagiariosprojetos SET idestagiarios = ?, idprojeto = ? WHERE id = ?', 'iii', [(int)$this->idestagiarios, (int)$this->idprojeto, (int)$this->id]);
+                $db->executarPrepared('UPDATE estagiariosprojetos SET idestagiario
+ = ?, idprojeto = ? WHERE id = ?', 'iii', [(int)$this->idestagiario
+, (int)$this->idprojeto, (int)$this->id]);
             }
             
         $db->desconectar();

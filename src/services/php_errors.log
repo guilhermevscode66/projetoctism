@@ -908,3 +908,54 @@ Stack trace:
 [09-Jan-2026 18:21:19 America/Sao_Paulo] Controller de orientadores instanciado
 [09-Jan-2026 18:21:19 America/Sao_Paulo] CreateSenha retornou: 1
 [09-Jan-2026 18:21:19 America/Sao_Paulo] Senha criada/atualizada com sucesso para orientador
+[14-Jan-2026 20:45:47 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[14-Jan-2026 20:45:47 America/Sao_Paulo] POST data: Array
+(
+    [csrf_token] => ef98c2e46ca121f61753cb4cffcfad37446e55e74b53ee18229916d36f415fb4
+    [idestagiario] => 
+    [idorientador] => 27
+    [senha1] => mariasilva1234
+    [senha2] => mariasilva1234
+)
+
+[14-Jan-2026 20:45:47 America/Sao_Paulo] SESSION data: Array
+(
+    [error] => csrf_fail
+    [csrf_token] => ef98c2e46ca121f61753cb4cffcfad37446e55e74b53ee18229916d36f415fb4
+)
+
+[14-Jan-2026 20:45:47 America/Sao_Paulo] POST recebido
+[14-Jan-2026 20:45:47 America/Sao_Paulo] Senha validada com sucesso
+[14-Jan-2026 20:45:47 America/Sao_Paulo] Verificando IDs...
+[14-Jan-2026 20:45:47 America/Sao_Paulo] idestagiario: 
+[14-Jan-2026 20:45:47 America/Sao_Paulo] idorientador: 27
+[14-Jan-2026 20:45:47 America/Sao_Paulo] id: NÃO SETADO
+[14-Jan-2026 20:45:47 America/Sao_Paulo] Processando como orientador. ID: 27
+[14-Jan-2026 20:45:47 America/Sao_Paulo] Controller de orientadores instanciado
+[14-Jan-2026 20:45:47 America/Sao_Paulo] CreateSenha retornou: 0
+[14-Jan-2026 20:45:47 America/Sao_Paulo] Falha ao criar senha para orientador
+[14-Jan-2026 20:48:20 America/Sao_Paulo] === DEBUG PassVerify.php ===
+[14-Jan-2026 20:48:20 America/Sao_Paulo] POST data: Array
+(
+    [csrf_token] => 4daf0cfd5f1601e1473b3654885c31021846614671f9915601a1c1c267d934d3
+    [idestagiario] => 
+    [idorientador] => 21
+    [senha1] => mariasilva1234
+    [senha2] => mariasilva1234
+)
+
+[14-Jan-2026 20:48:20 America/Sao_Paulo] SESSION data: Array
+(
+    [csrf_token] => 4daf0cfd5f1601e1473b3654885c31021846614671f9915601a1c1c267d934d3
+)
+
+[14-Jan-2026 20:48:20 America/Sao_Paulo] POST recebido
+[14-Jan-2026 20:48:20 America/Sao_Paulo] Senha validada com sucesso
+[14-Jan-2026 20:48:20 America/Sao_Paulo] Verificando IDs...
+[14-Jan-2026 20:48:20 America/Sao_Paulo] idestagiario: 
+[14-Jan-2026 20:48:20 America/Sao_Paulo] idorientador: 21
+[14-Jan-2026 20:48:20 America/Sao_Paulo] id: NÃO SETADO
+[14-Jan-2026 20:48:20 America/Sao_Paulo] Processando como orientador. ID: 21
+[14-Jan-2026 20:48:20 America/Sao_Paulo] Controller de orientadores instanciado
+[14-Jan-2026 20:48:20 America/Sao_Paulo] CreateSenha retornou: 1
+[14-Jan-2026 20:48:20 America/Sao_Paulo] Senha criada/atualizada com sucesso para orientador

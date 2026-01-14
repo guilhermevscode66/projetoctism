@@ -7,7 +7,6 @@ class OrientadoresModel
 
     protected $id;
 protected $matricula;
-protected $idprojeto;
     public function getId()
     {
         return $this->id;
@@ -60,7 +59,6 @@ public function __construct() {}
                 $this->matricula = $value['matricula'];
                 $this->email = $value['email'];
                 $this->senha = $value['senha'];
-                $this->idprojeto = $value['idprojeto'];
             }
         }
         
@@ -123,7 +121,6 @@ $db = new ConexaoMysql();
             $obj->matricula= $value['matricula'];
             $obj->email = $value['email'];
             $obj->senha = $value['senha'];
-            $obj->idprojeto = $value['idprojeto'];
            $resultListObject[] =  $obj;
 
         
@@ -139,18 +136,26 @@ $db = new ConexaoMysql();
             $nome = $this->nome_orientador;
             $matricula = $this->matricula;
             $email = $this->email;
-            $idprojeto = empty($this->idprojeto) ? null : (int)$this->idprojeto;
-            $db->executarPrepared('INSERT INTO orientadores (nome_orientador, matricula, email, idprojeto) VALUES (?, ?, ?, ?)', 'sssi', [$nome, $matricula, $email, $idprojeto]);
+            $db->executarPrepared(
+                'INSERT INTO orientadores (nome_orientador, matricula, email) VALUES (?, ?, ?)',
+                'sss',
+                [$nome, $matricula, $email]
+            );
         } else {
             $nome = $this->nome_orientador;
             $email = $this->email;
-            $idprojeto = empty($this->idprojeto) ? null : (int)$this->idprojeto;
-            $db->executarPrepared('UPDATE orientadores SET nome_orientador = ?, email = ?, idprojeto = ? WHERE id = ?', 'ssii', [$nome, $email, $idprojeto, (int)$this->id]);
-        }
+            
+$db->executarPrepared(
+                'UPDATE orientadores SET nome_orientador = ?, email = ? WHERE id = ?',
+                'ssi',
+                [$this->nome_orientador, $this->email, (int)$this->id]
+            );
+            }
+            
 
-        $this->total = $db->total;
+        $this->affected_rows = $db->total;
         $db->desconectar();
-        return $this->total;
+        return $this->affected_rows;
     }
 
     public function saveSenha(){
@@ -223,19 +228,6 @@ public function setMatricula($matricula): self {
 $this->matricula = $matricula;
 return $this;
 }
-
-/**
- * Get the value of idprojeto
- */
-public function getidprojeto() {
-return $this->idprojeto;
 }
 
-/**
- * Set the value of idprojeto
- */
-public function setidprojeto($idprojeto): self {
-$this->idprojeto = $idprojeto;
-return $this;
-}
-}
+?>
