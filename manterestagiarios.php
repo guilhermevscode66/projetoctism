@@ -25,9 +25,51 @@ function getValue($field, $obj, $session) {
     if ($obj && method_exists($obj, 'get' . $field)) return htmlspecialchars($obj->{'get' . $field}());
     return '';
 }
+
+
+// 1. Captura o código da URL de forma segura
+$cod = $_GET['cod'] ?? null;
+$alerta = null;
+
+// 2. Define a mensagem baseada no código (evitando o Fatal Error)
+if ($cod) {
+    switch ($cod) {
+        case 'email_duplicado':
+            $alerta = ['classe' => 'alert-danger', 'texto' => 'Este e-mail já está cadastrado para outro usuário.'];
+            break;
+        case 'nome_duplicado':
+            $alerta = ['classe' => 'alert-danger', 'texto' => 'Já existe um estagiário com este nome completo.'];
+            break;
+        case 'matricula_duplicada':
+            $alerta = ['classe' => 'alert-danger', 'texto' => 'Esta matrícula já pertence a outro estagiário.'];
+            break;
+        case 'email_invalido':
+            $alerta = ['classe' => 'alert-warning', 'texto' => 'O formato do e-mail digitado é inválido.'];
+            break;
+        case 'campos_vazios':
+            $alerta = ['classe' => 'alert-warning', 'texto' => 'Por favor, preencha todos os campos.'];
+            break;
+        case 'erro_cadastro':
+            $alerta = ['classe' => 'alert-danger', 'texto' => 'Erro ao salvar no banco de dados. Tente novamente.'];
+            break;
+        case 'erro_email':
+            $alerta = ['classe' => 'alert-warning', 'texto' => 'Estagiário salvo, mas o e-mail de ativação falhou.'];
+            break;
+    }
+}
 ?>
 
+
+
 <div class="container mt-4">
+<?php if ($alerta): ?>
+        <div class="alert <?= $alerta['classe'] ?> alert-dismissible fade show" role="alert">
+            <strong>Atenção:</strong> <?= $alerta['texto'] ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+
     <h1 class="mb-4"><?= ($estagiario && $estagiario->getId()) ? 'Editar estagiário' : 'Novo estagiário' ?></h1>
 
     <form method="post" action="src/services/EstagiariosServices.php">
@@ -38,7 +80,17 @@ function getValue($field, $obj, $session) {
         Por favor, preencha todos os campos obrigatórios.
     </div>
     <?php endif; ?>
+    <?php if($cod==='erro_cadastro'): ?>
+    <div class="alert alert-danger" role="alert">   
+        Erro ao salvar o estagiário. Por favor, tente novamente.
+    </div>
+    <?php endif; ?>
         <div class="mb-3">
+            <?php if($cod==='erro_csrf'): ?>
+            <div class="alert alert-danger" role="alert">
+                Erro de validação. Por favor, recarregue a página e tente novamente.    
+            </div>
+            <?php endif; ?>
             <label for="nomecompleto" class="form-label">Nome completo</label>
             <input type="text" class="form-control" name="nomecompleto" id="nomecompleto" 
                    value="<?= htmlspecialchars($p['nomecompleto'] ?? ($estagiario ? $estagiario->getNomeCompleto() : '')) ?>" required>
@@ -49,17 +101,18 @@ function getValue($field, $obj, $session) {
                 <label for="email" class="form-label">E-mail</label>
                 <input type="email" class="form-control" name="email" id="email" 
                        value="<?= htmlspecialchars($p['email'] ?? ($estagiario ? $estagiario->getEmail() : '')) ?>">
-                <?= $cod === 'email_invalido' ? '<small class="text-danger">E-mail inválido</small>' : '' ?>
-                <?= isset($cod) == 'erro_email' ? '<small class="text-danger">Erro ao enviar e-mail de confirmação</small>' : '' ?>
+                
+
+                
             </div>
             <div class="col-md-6 mb-3">
+                
+                
                 <label for="matricula" class="form-label">Matrícula</label>
                 <input type="text" class="form-control" name="matricula" id="matricula" 
                        value="<?= htmlspecialchars($p['matricula'] ?? ($estagiario ? $estagiario->getMatricula() : '')) ?>">
-                <?= $cod === 'matricula_invalida' ? '<small class="text-danger">Matrícula inválida</small>' : '' ?>
-                <?php if($cod === 'matricula_duplicada'): ?>
-                    <small class="text-danger">A matrícula informada já está em uso por outro estagiário.</small>
-                <?php endif; ?>
+
+
             </div>
         </div>
 

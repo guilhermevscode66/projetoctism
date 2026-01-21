@@ -14,6 +14,10 @@ class EstagiariosController
         $model = new EstagiariosModel();
         return $model->loadByEmail($email); // Retorna um estagiario específico
     }
+public function loadByNome($nome){
+    $model = new EstagiariosModel();
+return $model->loadByNome($nome);
+}
     public function loadById($id) {
         $model = new EstagiariosModel();
         return $model->loadById($id); // Retorna um estagiarios específico
@@ -24,11 +28,11 @@ public function loadByMatricula($matricula){
 }
     public function create($data) {
         $model = new EstagiariosModel();
-        var_dump($data);
-        die("Recebndo dados para criação de estagiario");
+        
+        
         $model->setNomecompleto($data['nomecompleto'] ?? '');
-        $model->setMatricula($data['matricula'] ?? '');
         $model->setEmail($data['email'] ?? '');
+        $model->setMatricula($data['matricula'] ?? '');
         $model->setSupervisor($data['supervisor'] ?? '');
         $model->setMinHoras(isset($data['MinHoras']) ? $data['MinHoras'] : 0);
 
@@ -39,7 +43,7 @@ public function loadByMatricula($matricula){
         $idNovoEstagiario = $model->lastInsertId;
 $idprojeto=$model->getidprojeto();
         $estagiariosProjetosModel = new EstagiariosProjetosModel;
-        $estagiariosProjetosModel->setIdestagiarios($idNovoEstagiario);
+        $estagiariosProjetosModel->setIdestagiario($idNovoEstagiario);
         $estagiariosProjetosModel->setidprojeto($idprojeto);
         return   $estagiariosProjetosModel->save($data);
 
@@ -64,14 +68,29 @@ public function CreateSenha($id, $senha){
         $model->setidprojeto(isset($data['idprojeto']) ? (int)$data['idprojeto'] : null);
         $model->setidorientador(isset($data['idorientador']) ? (int)$data['idorientador'] : null);
 
-        return $model->save(); // Atualiza no banco
+         $model->save(); // Atualiza no banco
+         
+         $idprojeto=$model->getidprojeto();
+        $estagiariosProjetosModel = new EstagiariosProjetosModel;
+        
+        $estagiariosProjetosModel->setidprojeto($idprojeto);
+        return   $estagiariosProjetosModel->save($data);
+
     }
 
     public function delete($id) {
         $model = new EstagiariosModel();
         return $model->delete($id); // Exclui do banco
     }
+
     
+   public function finalizarHoras($idestagiario, $idprojeto){
+        $model = new EstagiariosProjetosModel();
+        $model->setidestagiario($idestagiario);
+        $model->setidprojeto($idprojeto);
+         $model->finalizarVinculo($idestagiario, $idprojeto);
+         return $resultado;
+    }
 }
 
                         

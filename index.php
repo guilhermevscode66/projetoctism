@@ -4,7 +4,15 @@ require_once 'vendor/autoload.php';
 require_once 'shared/csrf.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
+// busca as mensagens de erro na sessão
+if(isset($_SESSION['msg'])){
+    $msg = $_SESSION['msg'];
+    unset($_SESSION['error']);
+}
+if( isset($msg) && $msg=='sessao_expirada'){
+    $alerta = ['classe' => 'alert-warning', 'texto' => ' Sua sessão expirou. Por favor, faça login novamente.'];
+}
+    
 //importo a usuarioscontroller
 use Controller\UsuariosController;
 
@@ -40,7 +48,9 @@ use Controller\UsuariosController;
         placeholder="Usuário"
     />
     <?php
-     if(isset($error)){
+     if(isset($_SESSION['error'])){
+        $error = $_SESSION['error'];
+        unset($_SESSION['error']);
         switch($error){
             case 'faltando_dados':
                 echo '<small class ="text-danger"> Todos os dados são obrigatórios</small>';

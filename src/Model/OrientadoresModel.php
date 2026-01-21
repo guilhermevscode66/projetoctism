@@ -36,6 +36,30 @@ protected $senha;
 public function __construct() {}
 
     // Métodos de Banco de Dados
+/**carrega o orientador pelo nome*/ 
+public function loadloadByNome($nome_orientador)
+    {
+        $db = new ConexaoMysql();
+        $db->conectar();
+        
+        // Usamos 's' pois o nome é uma string
+        $resultList = $db->consultarPrepared('SELECT * FROM orientadores WHERE nome_orientador = ?', 's', [$nome_orientador]);
+        
+        $db->desconectar();
+        $this->total = $db->total;
+
+        if ($this->total > 0) {
+            foreach ($resultList as $value) {
+                $this->id = $value['id'];
+                $this->nome_orientador = $value['nome_orientador'];
+                $this->matricula = $value['matricula'];
+                $this->email = $value['email'];
+                $this->senha = $value['senha'];
+            }
+        }
+        
+        return $this;
+    }
 /**
      * Carrega os dados do orientador através do e-mail
      * @param string $email
@@ -152,7 +176,7 @@ $db->executarPrepared(
             );
             }
             
-
+$this->lastInsertId = $db->lastInsertId;
         $this->affected_rows = $db->total;
         $db->desconectar();
         return $this->affected_rows;

@@ -47,9 +47,9 @@ use Controller\OrientadoresController;
             $idOri = $load->getId();
 
             echo '<a tabindex="0" href="manterprojetos.php" class="btn btn-primary">Novo projeto</a>';
-            echo '<a tabindex="0" href="listarprojetos.php?idorientador=' . $idOri . '" class="btn btn-primary">Listar projetos</a>';
+            echo '<a tabindex="0" href="listarprojetos.php" class="btn btn-primary">Listar projetos</a>';
             echo '<a tabindex="0" href="manterestagiarios.php?idorientador=' . $idOri . '" class="btn btn-primary">Novo estagiário</a>';
-            echo '<a tabindex="0" href="listarestagiarios.php?idorientador=' . $idOri . '" class="btn btn-primary">Listar estagiários</a>';
+            echo '<a tabindex="0" href="listarestagiarios.php" class="btn btn-primary">Listar estagiários</a>';
             echo '<a tabindex="0" href="manterorientadores.php?idorientador=' . $idOri . '" class="btn btn-warning">Editar meus dados</a>';
         } else {
             echo '<div class="alert alert-warning">Erro ao carregar dados do orientador. Faça login novamente.</div>';

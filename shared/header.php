@@ -27,5 +27,18 @@
 
 <?php
 session_start();
+    use Controller\EstagiariosController;
+use Controller\OrientadoresController;
+require_once 'vendor/autoload.php';
+// se houver uma sessão ativa, oferece um link para logout
+if (isset($_SESSION['idestagiario'])  ) {
+    $est = new EstagiariosController();
+    $estagiario = $est->loadById($_SESSION['idestagiario']);
+    echo '<nav class="navbar navbar-light bg-light">'.$estagiario->getNomecompleto().' | <a href="src/services/LogoutService.php" class="btn btn-sm btn-danger">sair</a></nav>';
+    }elseif(isset($_SESSION['idorientador'])){
+        $ori = new OrientadoresController();
+        $orientador = $ori->loadById($_SESSION['idorientador']);
+        echo '<nav class="navbar navbar-light bg-light"> '.$orientador->getnomeorientador().' | <a href="src/services/LogoutService.php" class="btn btn-sm btn-danger">sair</a></nav>';
+    }
     ?>
     <main>

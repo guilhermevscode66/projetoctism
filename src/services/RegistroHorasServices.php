@@ -1,47 +1,56 @@
 <?php
 use Controller\BancoHorasController;
 
-
 require_once '../../vendor/autoload.php';
 require_once '../../shared/csrf.php';
+session_start();
 
-// Normaliza e sanitiza entradas POST para evitar notices e XSS
-$__expected_post_keys = array_merge(array_keys($_POST ?? []), ['hora_entrada','hora_saida','idprojeto','idestagiario','id']);
-foreach ($__expected_post_keys as $k) {
-    if (!isset($_POST[$k])) $_POST[$k] = null;
-}
-foreach ($_POST as $k => $v) {
-    if (is_string($v)) $_POST[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
-}
-
-// Insert e Update
-if ($_POST) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
-        session_start();
         $_SESSION['error'] = 'csrf_fail';
         header('Location:../../registrohoras.php');
         exit();
     }
 
+    $idprojeto = $_POST['idprojeto'] ?? null;
+    $idestagiario = $_POST['idestagiario'] ?? null;
+    $hora_entrada = $_POST['hora_entrada'] ?? null;
+    $hora_saida = $_POST['hora_saida'] ?? null;
+
+    // Salva na sessão IMEDIATAMENTE para garantir que a página de origem tenha os dados ao voltar
+    $_SESSION['idprojeto'] = $idprojeto;
+    $_SESSION['idestagiario'] = $idestagiario;
+
+    // Validações de Horas
+    if ($hora_entrada > $hora_saida || $hora_saida < $hora_entrada) {
+        $_SESSION['error'] = 'hora_invalida';
+        header("Location:../../registrohoras.php?idprojeto=$idprojeto&idestagiario=$idestagiario");
+        exit();
+    }
+
+    if (empty($idprojeto) || empty($idestagiario) || empty($hora_entrada) || empty($hora_saida)) {
+        $_SESSION['error'] = 'faltando_dados';
+        header("Location:../../registrohoras.php?idprojeto=$idprojeto&idestagiario=$idestagiario");
+        exit();
+    }
+
     $controller = new BancoHorasController;
-    $total = 0;
-    //verifica se existe o idprojeto e idestagiario
-    if (isset($_POST['idprojeto']) && isset($_POST['idestagiario'])) {
-        $_POST['idprojeto'] = $_POST['idprojeto'];
-        $_POST['idestagiario'] = $_POST['idestagiario'];
-        if (empty($_POST['id'])) { //id auto increment gerado pelo banco, não é o estagiariosprojeto_id
-            $total = $controller->create($_POST);
-        } else {
-            $total = $controller->update($_POST['id'], $_POST);
-        }
-        //se o total for maior que zero, redireciona para horastrabalhadas.php
+    $dados = [
+        'idprojeto' => $idprojeto,
+        'idestagiario' => $idestagiario,
+        'hora_entrada' => $hora_entrada, 
+        'hora_saida' => $hora_saida
+    ];
 
-        if ($total > 0) {
-            header('location:\horastrabalhadas.php?idprojeto='.$_POST['idprojeto'].'&idestagiario='.$_POST['idestagiario']);
-        } else {
-            //se não conseguiu salvar redireciona com mensagem de erro
-            header('location:\registrohoras.php?cod=erro');
+    $total = empty($_POST['id']) ? $controller->create($dados) : $controller->update($_POST['id'], $dados);
 
-        }
+    if ($total > 0) {
+        $_SESSION['success'] = 'salvo_com_sucesso';
+        header('Location:../../horastrabalhadas.php');
+        exit();
+    } else {
+        $_SESSION['error'] = 'erro_ao_salvar';
+        header("Location:../../registrohoras.php?idprojeto=$idprojeto&idestagiario=$idestagiario");
+        exit();
     }
 }

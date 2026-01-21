@@ -4,6 +4,7 @@ namespace Model;
 class EstagiariosModel
 {
     public $total;
+    
 protected $idprojeto;
 protected $idorientador;
     
@@ -11,6 +12,8 @@ protected $idorientador;
 protected $email;
 protected $nome_projeto;
 protected $nome_orientador;
+protected $status;
+
     public function getId()
     {
         return $this->id;
@@ -105,6 +108,35 @@ protected $senha;
     public function __construct() {}
 
     // Métodos de Banco de Dados
+    /** carrega o estagiário pelo nome */
+     
+    public function loadByNome($nomecompleto)
+    {
+        $db = new ConexaoMysql();
+        $db->conectar();
+        
+        // Consulta baseada nos campos específicos da sua tabela
+        $resultList = $db->consultarPrepared('SELECT * FROM estagiarios WHERE nomecompleto = ?', 's', [$nomecompleto]);
+        
+        $db->desconectar();
+        $this->total = $db->total;
+
+        if ($this->total > 0) {
+            foreach ($resultList as $value) {
+                $this->id = $value['id'];
+                $this->nomecompleto = $value['nomecompleto'];
+                $this->email = $value['email'];
+                $this->matricula = $value['matricula'];
+                $this->supervisor = $value['supervisor'];
+                $this->MinHoras = $value['MinHoras'];
+                $this->senha = $value['senha'];
+                $this->idprojeto = $value['idprojeto'];
+                $this->idorientador = $value['idorientador'];
+            }
+        }
+        
+        return $this;
+    }
 /**
      * Carrega os dados do estagiário através do e-mail
      * @param string $email
@@ -146,7 +178,11 @@ protected $senha;
 
                 $db->desconectar();
                 $this->total = $db->total;
-                if ($this->total > 0) {
+                if (empty($resultList) && !is_array($resultList)) {
+                        return null; 
+                } 
+        
+        
                         foreach ($resultList as $value) {
                                 $this->id = $value['id'];
                                 $this->nomecompleto = $value['nomecompleto'];
@@ -158,9 +194,10 @@ protected $senha;
                                 $this->idprojeto = $value['idprojeto'];
                                 $this->idorientador = $value['idorientador'];
                         }
+                        return $this;
                 }
-        return $this;
-    }
+        
+    
 public function loadByMatricula($matricula){
         $db = new ConexaoMysql();
                 $db->conectar();
@@ -169,8 +206,11 @@ public function loadByMatricula($matricula){
 
                 $this->total = $db->total;
 
-                if ($this->total > 0) {
-                        foreach ($resultList as $value) {
+                
+    if (empty($resultList) || !is_array($resultList)) {
+        return null; 
+    }
+    foreach($resultList as $value) {
                                 $this->id = $value['id'];
                                 $this->nomecompleto = $value['nomecompleto'];
                                 $this->email = $value['email'];
@@ -181,9 +221,10 @@ public function loadByMatricula($matricula){
                                 $this->idprojeto = $value['idprojeto'];
                                 $this->idorientador = $value['idorientador'];
                         }
+                                return $this;
                 }
-                return $this;
-}
+                
+
 
 
     public function loadAll()
@@ -193,10 +234,13 @@ public function loadByMatricula($matricula){
 $sql ='SELECT
 estagiarios.*,
 projetos.nome_projeto,
-orientadores.nome_orientador
+orientadores.nome_orientador,
+estagiariosprojetos.status
 FROM estagiarios
 INNER JOIN projetos ON estagiarios.idprojeto = projetos.id
 INNER JOIN orientadores ON estagiarios.idorientador = orientadores.id
+INNER JOIN estagiariosprojetos ON estagiarios.id = estagiariosprojetos.idestagiario
+
 ;';
 
         $resultList = $db->consultarPrepared($sql);
@@ -212,13 +256,15 @@ INNER JOIN orientadores ON estagiarios.idorientador = orientadores.id
             $obj->matricula = $value['matricula'];
             // Use joined names when available; avoid undefined array keys
             $obj->projeto = isset($value['nome_projeto']) ? $value['nome_projeto'] : null;
-            $obj->orientador = isset($value['nome_orientador']) ? $value['nome_orientador'] : null;
+            
             $obj->supervisor = $value['supervisor'];
             $obj->MinHoras = $value['MinHoras'];
             $obj->senha = $value['senha'];
             $obj->idprojeto =$value['idprojeto'];
+            $obj->idorientador = $value['idorientador'];
             $obj->nome_projeto= $value['nome_projeto'];
             $obj->nome_orientador = $value['nome_orientador'];
+            $obj->status = $value['status'];
            $resultListObject[] =  $obj;
 
         }
@@ -229,29 +275,33 @@ INNER JOIN orientadores ON estagiarios.idorientador = orientadores.id
     {
         $db = new ConexaoMysql();
         $db->conectar();
+            
         if (empty($this->getId())) {
-            $nome = $this->nomecompleto;
+        $nome = $this->nomecompleto;
             $email = $this->email;
             $matricula = $this->matricula;
             $supervisor = $this->supervisor;
             $minHoras = $this->MinHoras;
             $idprojeto = empty($this->idprojeto) ? null : (int)$this->idprojeto;
             $idorientador = empty($this->idorientador) ? null : (int)$this->idorientador;
-            $db->executarPrepared('INSERT INTO estagiarios (nomecompleto, email, matricula, supervisor, MinHoras, idprojeto, idorientador) VALUES (?, ?, ?, ?, ?, ?, ?)', 'ssssiii', [$nome, $email, $matricula, $supervisor, $minHoras, $idprojeto, $idorientador]);
+            
+            $db->executarPrepared('INSERT INTO estagiarios (nomecompleto, email, matricula, supervisor, MinHoras, idprojeto, idorientador ) VALUES (?, ?, ?, ?, ?, ?, ?)', 'ssssiii', [$nome, $email, $matricula, $supervisor, $minHoras, $idprojeto, $idorientador]);
         } else {
-            $sql = 'UPDATE estagiarios SET ';
+            $id = (int)$this->id;
             $nome = $this->nomecompleto;
             $email = $this->email;
-            $idprojeto = empty($this->idprojeto) ? null : (int)$this->idprojeto;
-            $orientador = $this->orientador;
             $supervisor = $this->supervisor;
-            $db->executarPrepared('UPDATE estagiarios SET nomecompleto = ?, email = ?, idprojeto = ?, orientador = ?, supervisor = ? WHERE id = ?', 'ssissi', [$nome, $email, $idprojeto, $orientador, $supervisor, (int)$this->id]);
+            $minHoras = $this->MinHoras;
+            $idprojeto = empty($this->idprojeto) ? null : (int)$this->idprojeto;
+            $idorientador =   (int)$this->idorientador;
+            $db->executarPrepared('UPDATE estagiarios SET nomecompleto = ?, email = ?, supervisor = ?, MinHoras = ?, idprojeto = ?, idorientador = ?  WHERE id = ?', 'sssiiii', [$nome, $email, $supervisor, $minHoras, $idprojeto, $idorientador, (int)$this->id]);
         }
         
-        $this->lastInsertId = $db->lastInsertId; // busca o ultimo id inserido na base de dados.
+        
+         $this->lastInsertId = $db->lastInsertId; // busca o ultimo id inserido na base de dados.
         $db->desconectar();
         $this->total = $db->total;
-  
+
         return $this->total;
     }
 
@@ -273,7 +323,7 @@ INNER JOIN orientadores ON estagiarios.idorientador = orientadores.id
         $db->conectar();
         $id = (int) $id;
         // remove vínculos em estagiariosprojetos antes de remover o estagiário
-        $db->executarPrepared('DELETE FROM estagiariosprojetos WHERE idestagiarios = ?', 'i', [$id]);
+        $db->executarPrepared('DELETE FROM estagiariosprojetos WHERE idestagiario = ?', 'i', [$id]);
         $db->executarPrepared('DELETE FROM estagiarios WHERE id = ?', 'i', [$id]);
         $db->desconectar();
         $this->total = $db->total;
@@ -371,4 +421,15 @@ public function setIdorientador($idorientador): self {
 $this->idorientador = $idorientador;
 return $this;
 }
+public function getStatus() {
+    return $this->status;
+    }
+
+    /**
+     * Set the value of status
+     */
+    public function setStatus($status): self {
+    $this->status = $status;
+    return $this;
+    }
 }

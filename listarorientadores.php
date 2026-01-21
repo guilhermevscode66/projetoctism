@@ -29,9 +29,12 @@ $orientadores = $controller->loadAll();
                     <td><?= htmlspecialchars($o->getnomeorientador()) ?></td>
                     <td><?= htmlspecialchars($o->getEmail()) ?></td>
                     <td>
+                        <?php if ($est->getIdorientador() == $idLogado): ?>
                         <a href="manterorientadores.php?id=<?= $o->getId() ?>" class="btn btn-sm btn-info">Editar</a>
                         <a href="src/services/OrientadoresServices.php?id=<?= $o->getId() ?>" 
                            class="btn btn-sm btn-danger" onclick="return confirm('Excluir orientador?')">Excluir</a>
+                           <?php else: ?>
+                            <span class="badge bg-secondary">Somente leitura</span>
                     </td>
                 </tr>
             <?php endforeach; ?>

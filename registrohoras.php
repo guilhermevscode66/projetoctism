@@ -1,13 +1,26 @@
 <?php
 require_once 'shared/header.php';
 require_once 'vendor/autoload.php';
+if( isset($_GET['idprojeto']) && isset($_GET['idestagiario']) ){
+  $idprojeto= $_GET['idprojeto'];
+  $idestagiario = $_GET['idestagiario'];
+  
+
+}
+//veririfica se teve mensagem de erro na sessão
+if( isset($_SESSION['error'])){
+    $error = $_SESSION['error'];
+    unset($_SESSION['error']);
+    if($error ==='faltando_dados'){
+        $alerta = ['classe' => 'alert-danger', 'texto' => ' Por favor, preencha todos os campos obrigatórios.'];
+    }elseif($error === 'hora_invalida'){
+        $alerta = ['classe' => 'alert-danger', 'texto' => ' A hora de entrada não pode ser maior que a hora de saída.'];
+    }elseif($error === 'erro_ao_salvar'){
+        $alerta = ['classe' => 'alert-danger', 'texto' => ' Ocorreu um erro ao salvar o registro de horas. Por favor, tente novamente.'];
+    }
+}
 use Controller\BancoHorasController;
 $controller=new BancoHorasController;
-if($_REQUEST['idprojeto'] &&$_REQUEST['idestagiario']){
-  $idprojeto= $_REQUEST['idprojeto'];
-  $idestagiario = $_REQUEST['idestagiario'];
-  $banco = $controller->loadByIpes($idprojeto, $idestagiario);
-}
 ?>
 <h2> Registro de horas</h2>
 <script>

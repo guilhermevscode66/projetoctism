@@ -1,124 +1,119 @@
 <?php
 use Controller\EstagiariosController;
 use Controller\MailController;
+
 require_once '../../vendor/autoload.php';
 require_once '../../shared/csrf.php';
 require_once '../../config.php';
-session_start();
-// Processamento via POST (Insert/Update)
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
-        
-        $_SESSION['error'] = 'csrf_fail';
-        header('Location:../../manterestagiarios.php');
+        header('Location:../../manterestagiarios.php?cod=erro_csrf');
         exit();
     }
 
-    
     $_SESSION['p'] = $_POST;
 
-    // Validação de e-mail e matrícula
-    $id =(int) $_POST['id'] ?? null;
-    $nome= $_POST['nomecompleto'];
-    $email = trim($_POST['email']); 
-    $matricula = trim($_POST['matricula']);
-    $supervisor = $_POST['supervisor'];
-    $projeto = $_POST['idprojeto'];
-        $orientador = $_POST['idorientador'];
-        $minHoras= $_POST['minhoras'];
-        if($nome =='' || $email=='' || $matricula==''|| $supervisor=='' || $projeto=='' || $orientador=='' || $minHoras==''){
-            
-            header('Location:../../manterestagiarios.php?cod=campos_vazios');
-            exit();
-        }
-    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    // Sanatização e Atribuição
+    $id         = !empty($_POST['id']) ? (int)$_POST['id'] : null;
+    $nome       = trim($_POST['nomecompleto'] ?? '');
+    $email      = trim($_POST['email'] ?? ''); 
+    $matricula  = trim($_POST['matricula'] ?? '');
+    $supervisor = $_POST['supervisor'] ?? '';
+    $projeto    = $_POST['idprojeto'] ?? '';
+    $orientador = $_POST['idorientador'] ?? '';
+    $minHoras   = $_POST['MinHoras'] ?? '';
+
+    // Validação de Campos Vazios
+    if(empty($nome) || empty($email) || empty($matricula) || empty($supervisor) || empty($projeto) || empty($orientador) || empty($minHoras)){
+        header('Location:../../manterestagiarios.php?cod=campos_vazios');
+        exit();
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         header('Location:../../manterestagiarios.php?cod=email_invalido');
         exit();
     }
     
-    if (!is_numeric($_POST['matricula'])) {
+    if (!is_numeric($matricula)) {
         header('Location:../../manterestagiarios.php?cod=matricula_invalida');
         exit();
     }
 
-    // Se passou na validação, processa
     $controller = new EstagiariosController();
-    //recebe osdados do formulário
-    $dados  = [
+    $dados = [
         'nomecompleto' => $nome,
-        'email' => $email,
-        'matricula' => $matricula,
-        'supervisor' => $supervisor,
-        'idprojeto' => $projeto,
-        'idorientador' => $orientador,
-        'minhoras' => $minHoras
+        'email'        => $email,
+        'matricula'    => $matricula,
+        'supervisor'   => $supervisor,
+        'MinHoras'     => $minHoras,
+        'idprojeto'    => $projeto,
+        'idorientador' => $orientador
     ];
+
     if (empty($id)) {
-        //verifica se a matrícula já existe
+        // CREATE
         $estagiarioExistente = $controller->loadByMatricula($matricula);    
-        // Se o retorno não for nulo, significa que já existe
-        if ($estagiarioExistente) {
-            $_SESSION['error'] = 'matricula_duplicada';
-            header('Location: ../../manterestagiarios.php');
+         
+
+        if($estagiarioExistente!==null){
+            header('Location: ../../manterestagiarios.php?cod=matricula_duplicada');
             exit();
         }
-        $total = $controller->create($_POST);
+        $total = $controller->create($dados);
     } else {
-        $total = $controller->update($_POST['id'], $_POST);
+        // UPDATE
+        $total = $controller->update($id, $dados);
     }
-if ($total > 0) {
-        $est = $controller->loadByMatricula($matricula);
-        $idNovoEstagiario = $est->getId();
-        $recipient = $est->getEmail();
-        $nomeEstagiario = $est->getNomecompleto();
 
-        // Só envia e-mail de "Boas-vindas/Criar senha" se for um NOVO cadastro
-        if (empty($_POST['id'])) {
+    // VERIFICAÇÃO DE SUCESSO NO BANCO
+    if ($total > 0) {
+        unset($_SESSION['p']); // Limpa rascunho pois deu certo
+
+        if (empty($id)) {
+            // Se foi INSERT, envia e-mail
+            $est = $controller->loadByMatricula($matricula);
             $mail = new MailController();
             $mail->mail->clearAddresses();
-            $mail->mail->addAddress($recipient);
+            $mail->mail->addAddress($est->getEmail());
             
             $subject = 'Criação de Senha — Sistema de Horas';
-            $title = 'Bem-vindo(a) ao Sistema!';
+            $title   = 'Bem-vindo(a) ao Sistema!';
+            $message = "<p>Olá, <strong>" . htmlspecialchars($est->getNomecompleto()) . "</strong>.</p>";
+            $message .= "<p>Seu cadastro foi realizado com sucesso. Clique abaixo para definir sua senha.</p>";
+            $link    = BASE_URL . '/setpassword.php?idestagiario=' . (int)$est->getId();
             
-            $message = "<p>Olá, <strong>" . htmlspecialchars($nomeEstagiario) . "</strong>.</p>";
-            $message .= "<p>Seu cadastro como estagiário foi realizado com sucesso.</p>";
-            $message .= "<p>Para começar a registrar suas horas, clique no botão abaixo para definir sua senha de acesso.</p>";
-
-            // Note que passamos idestagiario na URL para diferenciar do orientador na setpassword.php
-            $link = BASE_URL . '/setpassword.php?idestagiario=' . (int)$idNovoEstagiario;
-            
-            $mail->setTemplate($subject, $title, $nomeEstagiario, $message, 'Criar minha senha', $link);
+            $mail->setTemplate($subject, $title, $est->getNomecompleto(), $message, 'Criar minha senha', $link);
 
             if ($mail->send()) {
-                unset($_SESSION['p']); // Limpa rascunho do formulário
                 header('Location:../../aviso_sobre_email_enviado.php');
-                exit();
             } else {
-                // Se o e-mail falhar, redireciona com erro, mas o cadastro no banco já foi feito
-                $_SESSION['error'] = 'email_fail';
                 header('Location:../../manterestagiarios.php?cod=erro_email');
-                exit();
             }
         } else {
-            // Se for apenas um UPDATE, redireciona direto para a lista
-            unset($_SESSION['p']);
+            // Se foi UPDATE, apenas redireciona para a lista
             header('Location:../../listarestagiarios.php?msg=sucesso_update');
-            exit();
         }
+        exit();
+    } else {
+        // Se o banco retornou 0 (nenhuma linha afetada ou erro de SQL)
+        header('Location:../../manterestagiarios.php?cod=erro_cadastro');
+        exit();
     }
-    }
-
-// 3. Processamento via GET (Delete)
-
-
-// Bloco de Delete
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-    session_start();
+}
+//bloco para finalizar  as horas  de estagiários:
+// Bloco para finalizar as horas de estagiários
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'finalizar') {
     
-    $idEstagiario = (int)$_GET['id'];
-    $idLogado = $_SESSION['idlogado'] ?? null; // Sua variável de sessão
+    $idEstagiario = (int)($_GET['idestagiario'] ?? 0);
+    
+    // SEGURANÇA: Pegar o ID do orientador da SESSÃO, não do GET
+    $idLogado = $_SESSION['idorientador'] ?? null; 
 
     if (!$idLogado) {
         header('Location: ../../index.php?error=sessao_expirada');
@@ -127,32 +122,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
     $controller = new EstagiariosController();
     
-    // 1. Primeiro, carregamos o estagiário para verificar quem é o orientador dele
+    // 1. Precisamos carregar o estagiário para validar se ele pertence ao orientador logado
     $estagiario = $controller->loadById($idEstagiario);
 
     if (!$estagiario) {
-        header('Location: ../../listarestagiarios.php?msg=erro_nao_encontrado');
+        $_SESSION['msg'] = 'erro_nao_encontrado';
+        header('Location: ../../listarestagiarios.php');
         exit();
     }
 
-    // 2. VALIDAÇÃO DE PROPRIEDADE (O "Pulo do Gato")
-    // Verificamos se o idorientador do estagiário no banco é igual ao idlogado na sessão
-    if ($estagiario->getidorientador() == $idLogado) {
-        
-        $sucesso = $controller->delete($idEstagiario);
-        
-        if ($sucesso) {
-            header('Location: ../../listarestagiarios.php?msg=sucesso_delete');
-        } else {
-            header('Location: ../../listarestagiarios.php?msg=erro_delete');
-        }
-        
+    // 2. Validação de Permissão (Hierarquia)
+    if ($estagiario->getIdOrientador() != $idLogado) {
+        $_SESSION['msg'] = 'erro_permissao';
+        header('Location: ../../listarestagiarios.php');
+        exit();
+    }
+    
+    // 3. Pegar o ID do projeto vinculado ao estagiário
+    // Se o seu objeto estagiário já tem o ID do projeto, usamos ele:
+    $idProjeto = $estagiario->getidprojeto(); 
+
+    // 4. Executa a finalização
+    $resultado = $controller->finalizarHoras($idEstagiario, $idProjeto);
+
+    if ($resultado === true) {
+        $_SESSION['msg'] = 'sucesso_finalizar_horas';
     } else {
-        // Tentativa de invasão ou erro de permissão
-        // Logar essa tentativa pode ser útil para segurança
-        error_log("Tentativa de exclusão não autorizada: Orientador $idLogado tentou excluir Estagiário $idEstagiario");
-        header('Location: ../../listarestagiarios.php?msg=erro_permissao');
+        $_SESSION['msg'] = 'erro_finalizar_horas';
+    }
+
+    header('Location: ../../listarestagiarios.php');
+    exit();
+}
+
+
+// Bloco de Delete (Mantido e ajustado)
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && isset($_DELETE['id'])) {
+    $idEstagiario = (int) $_GET['id'];
+    $idLogado = $_GET['idlogado'] ?? null;
+
+    if (!$idLogado) {
+        $_SESSION =['msg' => 'sessao_expirada'];
+        header('Location: ../../index.php');
+        exit();
+    }
+
+    $controller = new EstagiariosController();
+    $estagiario = $controller->loadById($idEstagiario);
+
+    if (!$estagiario) {
+        $_SESSION=['msg' => 'erro_nao_encontrado'];
+        header('Location: ../../listarestagiarios.php');
+        exit();
+    }
+
+    if ($estagiario->getidorientador() == $idLogado) {
+        if ($controller->delete($idEstagiario)) {
+            $_SESSION=['msg' => 'sucesso_delete'];
+            header('Location: ../../listarestagiarios.php');
+        } else {
+            $_SESSION=['msg' => 'erro_delete'];
+            header('Location: ../../listarestagiarios.php');
+        }
+    } else {
+        $_SESSION=['msg' => 'erro_permissao'];
+        header('Location: ../../listarestagiarios.php');
     }
     exit();
 }
-?>

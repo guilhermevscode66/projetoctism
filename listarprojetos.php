@@ -9,6 +9,9 @@ use Controller\ProjetosController;
 $msg = $_GET['msg'] ?? null;
 $controller = new ProjetosController();
 $dados = $controller->loadAll();
+// ID do orientador logado (ajuste conforme seu sistema de login)
+$idLogado = $_SESSION['idorientador'] ?? null; 
+
 ?>
 
 <div class="container mt-4">
@@ -37,6 +40,7 @@ $dados = $controller->loadAll();
         </thead>
         <tbody>
             <?php if (!empty($dados)): ?>
+                <?php if($dados->getIdorientador == $idLogado): ?>
                 <?php foreach ($dados as $projeto): ?>
                     <tr>
                         <td><?php echo $projeto->getId(); ?></td>
@@ -55,10 +59,13 @@ $dados = $controller->loadAll();
                                 <a href="src/services/ServicesProjetos.php?id=<?php echo $projeto->getId(); ?>" 
                                    onclick="return confirm('Deseja excluir esse projeto?');" 
                                    class="btn btn-danger btn-sm flex-fill">Excluir</a>
+                                   <?php else: ?>
+                    <span class="badge bg-secondary">Somente leitura</span>        
+                    <?php endif; ?>
+
                             </div>
                         </td>
-                    </tr>
-                <?php endforeach; ?>
+                                        <?php endforeach; ?>
             <?php else: ?>
                 <tr>
                     <td colspan="4" class="text-center">Nenhum projeto cadastrado.</td>
